@@ -1,0 +1,977 @@
+<!-- ===== HALAMAN DASBOR IKLAN APLIKASI → BLOK 1 - DASBOR IKLAN APLIKASI PRO - HEAD, META, PWA, STYLE      (PWA, Dark Mode, Animasi, Responsive) ===== -->
+<!-- ============================================================
+     BLOK 1 - DASBOR IKLAN APLIKASI PRO - HEAD, META, PWA, STYLE
+     (PWA, Dark Mode, Animasi, Responsive)
+     ============================================================ -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kumpulan Aplikasi Pro - Dasbor Iklan</title>
+    
+    <!-- META PWA -->
+    <meta name="theme-color" content="#4f46e5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Aplikasi Pro">
+    <meta name="description" content="Kumpulan 100 Aplikasi Pro - Ringan, Mudah, dan Dapat Diinstal di HP">
+    
+    <!-- PWA MANIFEST -->
+    <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Kumpulan%20Aplikasi%20Pro%22,%22short_name%22:%22AplikasiPro%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%23ffffff%22,%22theme_color%22:%22%234f46e5%22,%22icons%22:[{%22src%22:%22https://cdn-icons-png.flaticon.com/512/1828/1828670.png%22,%22sizes%22:%22512x512%22,%22type%22:%22image/png%22}]}">
+    
+    <!-- FAVICON -->
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/1828/1828670.png">
+
+    <!-- CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- CUSTOM STYLE -->
+    <style>
+        /* ========== CUSTOM SCROLLBAR ========== */
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #4f46e5; border-radius: 20px; }
+        
+        /* ========== ANIMASI ========== */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+        @keyframes glow { 0%, 100% { box-shadow: 0 0 10px rgba(79,70,229,0.3); } 50% { box-shadow: 0 0 25px rgba(79,70,229,0.6); } }
+        @keyframes slideInLeft { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        
+        .animate-fadeIn { animation: fadeIn 0.4s ease forwards; }
+        .animate-slideUp { animation: slideUp 0.5s ease forwards; }
+        .animate-pulse { animation: pulse 2s infinite; }
+        .animate-float { animation: float 3s ease-in-out infinite; }
+        .animate-glow { animation: glow 2s infinite; }
+        .animate-slideInLeft { animation: slideInLeft 0.5s ease forwards; }
+        .animate-slideInRight { animation: slideInRight 0.5s ease forwards; }
+        .animate-scaleIn { animation: scaleIn 0.3s ease forwards; }
+        
+        /* ========== DARK MODE ========== */
+        body.dark { background: #0f172a; color: #e2e8f0; }
+        body.dark #main-container { background: #1e293b; border-color: #334155; }
+        body.dark .bg-slate-50 { background: #0f172a; }
+        body.dark .bg-white { background: #1e293b; }
+        body.dark .text-slate-700 { color: #e2e8f0; }
+        body.dark .text-slate-400 { color: #94a3b8; }
+        body.dark .text-slate-500 { color: #94a3b8; }
+        body.dark .text-slate-600 { color: #cbd5e1; }
+        body.dark .border-slate-100 { border-color: #334155; }
+        body.dark .border-slate-200 { border-color: #334155; }
+        body.dark .bg-slate-100 { background: #334155; }
+        body.dark input, body.dark select { background: #0f172a; color: #e2e8f0; border-color: #475569; }
+        
+        /* ========== MODAL OVERLAY ========== */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 9999; padding: 16px;
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-overlay.hidden { display: none; }
+        .modal-content {
+            background: white; border-radius: 20px; max-width: 500px; width: 100%;
+            max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.35s ease;
+        }
+        body.dark .modal-content { background: #1e293b; border: 1px solid #334155; }
+        
+        /* ========== TOAST ========== */
+        .toast-container {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            z-index: 99999; max-width: 90%; pointer-events: none;
+        }
+        .toast {
+            background: #1e293b; color: #fff; padding: 12px 20px;
+            border-radius: 12px; font-size: 13px; font-weight: 600;
+            opacity: 0; transform: translateY(20px); transition: all 0.3s ease;
+            pointer-events: auto; text-align: center; margin-top: 8px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3); border-left: 4px solid #4f46e5;
+        }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast-success { border-left-color: #10b981; }
+        .toast-error { border-left-color: #ef4444; }
+        .toast-warning { border-left-color: #f59e0b; }
+        body.dark .toast { background: #0f172a; }
+        
+        /* ========== TRANSISI HALAMAN ========== */
+        .page-transition { animation: fadeIn 0.35s ease; }
+        
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 480px) {
+            body { padding: 8px; }
+            .modal-content { margin: 8px; border-radius: 16px; }
+        }
+
+        /* ========== CARD HOVER ========== */
+        .app-card {
+            transition: all 0.3s ease;
+        }
+        .app-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(79,70,229,0.15);
+        }
+        body.dark .app-card:hover {
+            box-shadow: 0 12px 30px rgba(79,70,229,0.3);
+        }
+
+        /* ========== GRADIENT TEXT ========== */
+        .gradient-text {
+            background: linear-gradient(to right, #4f46e5, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex items-center justify-center font-sans antialiased text-slate-800 p-4 selection:bg-indigo-500 selection:text-white">
+
+    <!-- TOAST CONTAINER -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <div id="main-container" class="w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden transition-all duration-300">
+        
+        <!-- HEADER APP -->
+        <div class="bg-gradient-to-br from-indigo-600 to-purple-700 p-7 text-center text-white relative">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
+            <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full blur-xl -ml-8 -mb-8"></div>
+            <h1 class="text-2xl font-extrabold tracking-wider uppercase drop-shadow-md relative z-10">Kumpulan Aplikasi Pro</h1>
+            <p class="text-indigo-200 text-xs mt-1 font-medium relative z-10">Semua Aplikasi Ringan & Mudah Digunakan</p>
+        </div>
+
+        <div class="p-6 relative">
+<!-- END BLOK 1 -->
+
+
+<!-- ===== HALAMAN DASBOR IKLAN APLIKASI → BLOK 2 - DASBOR IKLAN APLIKASI PRO - HALAMAN DEPAN ===== -->
+<!-- ============================================================
+     BLOK 2 - DASBOR IKLAN APLIKASI PRO - HALAMAN DEPAN
+     (Header, Hero, Subtitle, Deskripsi)
+     ============================================================ -->
+            <div id="page-home" class="space-y-6 page-transition">
+                
+                <!-- HERO SECTION -->
+                <div class="text-center space-y-3">
+                    <div class="text-5xl mb-3 animate-float">🚀</div>
+                    <h1 class="text-2xl font-extrabold text-slate-800 tracking-tight">
+                        KUMPULAN <span class="gradient-text">APLIKASI PRO</span>
+                    </h1>
+                    <p id="home-subtitle" class="text-slate-500 text-sm font-medium max-w-md mx-auto leading-relaxed">
+                        Semua Aplikasi Ringan dan Mudah Digunakan
+                    </p>
+                    <div class="flex items-center justify-center gap-2 text-xs text-slate-400">
+                        <span class="w-8 h-0.5 bg-indigo-400 rounded-full"></span>
+                        <span>Aplikasi Berkualitas</span>
+                        <span class="w-8 h-0.5 bg-indigo-400 rounded-full"></span>
+                    </div>
+                    <p class="text-xs text-slate-400 max-w-sm mx-auto leading-relaxed">
+                        Kumpulan aplikasi web profesional yang ringan, cepat, dan dapat diinstal langsung di HP Anda. 
+                        Semua aplikasi mendukung mode offline dan multi-user.
+                    </p>
+                </div>
+
+                <!-- STATISTIK -->
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-100 rounded-2xl p-4 text-center">
+                        <div class="text-2xl font-extrabold text-indigo-600" id="stat-total-apps">100</div>
+                        <div class="text-[10px] font-semibold text-slate-500 uppercase mt-1">Aplikasi</div>
+                        <p class="text-[9px] text-slate-400 mt-0.5">Siap Pakai</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-100 rounded-2xl p-4 text-center">
+                        <div class="text-2xl font-extrabold text-emerald-600" id="stat-total-users">50K</div>
+                        <div class="text-[10px] font-semibold text-slate-500 uppercase mt-1">Pengguna</div>
+                        <p class="text-[9px] text-slate-400 mt-0.5">Aktif</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100 rounded-2xl p-4 text-center">
+                        <div class="text-2xl font-extrabold text-amber-600" id="stat-total-updates">12</div>
+                        <div class="text-[10px] font-semibold text-slate-500 uppercase mt-1">Update</div>
+                        <p class="text-[9px] text-slate-400 mt-0.5">Per Bulan</p>
+                    </div>
+                </div>
+
+                <!-- FITUR UNGGULAN -->
+                <div class="space-y-3">
+                    <h3 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider text-center">
+                        Mengapa Memilih Aplikasi Kami
+                    </h3>
+                    <div class="grid grid-cols-3 gap-3">
+                        <div class="bg-white border border-slate-200 rounded-2xl p-4 text-center hover:border-indigo-300 transition-all cursor-default">
+                            <div class="text-2xl mb-2">⚡</div>
+                            <h4 class="text-xs font-bold text-slate-700">Ringan</h4>
+                            <p class="text-[9px] text-slate-400 mt-1">Tanpa loading lama</p>
+                        </div>
+                        <div class="bg-white border border-slate-200 rounded-2xl p-4 text-center hover:border-indigo-300 transition-all cursor-default">
+                            <div class="text-2xl mb-2">📶</div>
+                            <h4 class="text-xs font-bold text-slate-700">Offline</h4>
+                            <p class="text-[9px] text-slate-400 mt-1">Akses tanpa internet</p>
+                        </div>
+                        <div class="bg-white border border-slate-200 rounded-2xl p-4 text-center hover:border-indigo-300 transition-all cursor-default">
+                            <div class="text-2xl mb-2">👥</div>
+                            <h4 class="text-xs font-bold text-slate-700">Multi-User</h4>
+                            <p class="text-[9px] text-slate-400 mt-1">Banyak akun</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TOMBOL MENUJU DAFTAR APLIKASI -->
+                <div class="text-center pt-2">
+                    <a href="#app-list" onclick="document.getElementById('app-list-section').scrollIntoView({behavior:'smooth'}); return false;"
+                       class="inline-flex items-center gap-2 bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-3 px-6 rounded-2xl text-sm shadow-lg shadow-indigo-500/25 active:scale-[0.97] transition-all cursor-pointer">
+                        <i class="fa-solid fa-grid-2"></i> Lihat Semua Aplikasi
+                        <i class="fa-solid fa-arrow-down animate-bounce text-xs"></i>
+                    </button>
+                </div>
+            </div>
+<!-- END BLOK 2 -->
+
+
+<!-- ===== HALAMAN DASBOR IKLAN APLIKASI → BLOK 3 - DASBOR IKLAN APLIKASI PRO - DAFTAR APLIKASI ===== -->
+<!-- ============================================================
+     BLOK 3 - DASBOR IKLAN APLIKASI PRO - DAFTAR APLIKASI
+     (Grid 100 Aplikasi Pro, Bisa Diklik, Bisa Diedit Admin)
+     ============================================================ -->
+            <div id="app-list-section" class="space-y-4 page-transition">
+                
+                <!-- HEADER DAFTAR APLIKASI -->
+                <div class="text-center space-y-2 pt-4 border-t border-slate-100">
+                    <h2 id="app-list-title" class="text-lg font-extrabold text-slate-800">
+                        100 <span class="gradient-text">Aplikasi Pro</span>
+                    </h2>
+                    <p class="text-xs text-slate-400 max-w-md mx-auto">
+                        Klik aplikasi untuk langsung menjalankannya. Semua aplikasi siap digunakan.
+                    </p>
+                    <!-- PENCARIAN APLIKASI -->
+                    <div class="relative max-w-xs mx-auto">
+                        <input type="text" id="app-search-input" 
+                               class="w-full px-4 py-2.5 pl-10 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                               placeholder="Cari aplikasi..."
+                               oninput="filterAppList()">
+                        <i class="fa-solid fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <button onclick="clearAppSearch()" id="app-search-clear" 
+                                class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-red-500 cursor-pointer">
+                            <i class="fa-solid fa-xmark text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- GRID APLIKASI -->
+                <div id="app-grid-container" class="grid grid-cols-3 sm:grid-cols-4 gap-3 max-h-[500px] overflow-y-auto pr-1">
+                    <!-- Aplikasi akan dirender oleh JavaScript -->
+                    <div class="col-span-3 sm:col-span-4 text-center py-8 text-slate-400 text-xs italic">
+                        Memuat daftar aplikasi...
+                    </div>
+                </div>
+
+                <!-- EMPTY STATE -->
+                <div id="app-empty-state" class="text-center py-8 hidden">
+                    <div class="text-4xl mb-2">📭</div>
+                    <p class="text-xs text-slate-400 font-medium">Belum ada aplikasi</p>
+                    <p class="text-[10px] text-slate-400 mt-1">Admin dapat menambahkan aplikasi di halaman admin</p>
+                </div>
+
+                <!-- NAVIGASI HALAMAN (UNTUK 100 APLIKASI) -->
+                <div id="app-pagination" class="flex items-center justify-center gap-2 pt-2">
+                    <button onclick="prevAppPage()" id="btn-prev-page"
+                            class="w-8 h-8 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg flex items-center justify-center text-xs cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <span id="app-page-info" class="text-xs font-bold text-slate-500">Halaman 1</span>
+                    <button onclick="nextAppPage()" id="btn-next-page"
+                            class="w-8 h-8 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg flex items-center justify-center text-xs cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+<!-- END BLOK 3 -->
+
+
+<!-- ===== HALAMAN DASBOR IKLAN APLIKASI → BLOK 4 - DASBOR IKLAN APLIKASI PRO - PROFIL & KONTAK ===== -->
+<!-- ============================================================
+     BLOK 4 - DASBOR IKLAN APLIKASI PRO - PROFIL & KONTAK
+     (Profil Pengembang, Tombol Hubungi, Footer)
+     ============================================================ -->
+            <div id="profile-section" class="space-y-4 pt-4 border-t border-slate-100 page-transition">
+                
+                <!-- PROFIL PENGEMBANG -->
+                <div class="bg-gradient-to-br from-slate-50 to-indigo-50/30 border border-slate-200 rounded-2xl p-5 text-center space-y-3">
+                    <div class="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-2xl shadow-lg shadow-indigo-500/20">
+                        <i class="fa-solid fa-user-gear"></i>
+                    </div>
+                    <div>
+                        <h3 id="profile-name" class="text-sm font-extrabold text-slate-800">Radhika</h3>
+                        <p id="profile-role" class="text-[10px] font-bold text-indigo-500 uppercase tracking-wider">Developer & Founder</p>
+                    </div>
+                    <p id="profile-description" class="text-xs text-slate-500 leading-relaxed max-w-xs mx-auto">
+                        Pengembang aplikasi web profesional. Fokus pada aplikasi ringan, cepat, dan mudah digunakan untuk semua kalangan.
+                    </p>
+                    
+                    <!-- SOCIAL LINKS -->
+                    <div class="flex items-center justify-center gap-3">
+                        <a href="#" id="profile-wa" target="_blank" 
+                           class="w-8 h-8 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center text-sm transition-all cursor-pointer"
+                           title="WhatsApp">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </a>
+                        <a href="#" id="profile-telegram" target="_blank" 
+                           class="w-8 h-8 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-sm transition-all cursor-pointer"
+                           title="Telegram">
+                            <i class="fa-brands fa-telegram-plane"></i>
+                        </a>
+                        <a href="#" id="profile-email" target="_blank" 
+                           class="w-8 h-8 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg flex items-center justify-center text-sm transition-all cursor-pointer"
+                           title="Email">
+                            <i class="fa-solid fa-envelope"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- TOMBOL HUBUNGI -->
+                <button onclick="contactAdmin()" 
+                        class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-indigo-500/20 active:scale-[0.97] transition-all cursor-pointer text-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-headset"></i> Hubungi Admin
+                </button>
+
+                <!-- TOMBOL LOGIN ADMIN -->
+                <button onclick="switchPage('page-login-admin')" 
+                        class="w-full bg-slate-100 hover:bg-slate-200 text-slate-500 font-semibold py-3 rounded-2xl text-xs cursor-pointer transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-lock text-slate-400"></i> Login Admin
+                </button>
+
+                <!-- FOOTER -->
+                <div class="text-center space-y-2 pt-2">
+                    <p class="text-[10px] text-slate-400">
+                        © <span id="currentYear"></span> Kumpulan Aplikasi Pro. All rights reserved.
+                    </p>
+                    <p class="text-[9px] text-slate-400">
+                        Dibuat dengan <i class="fa-solid fa-heart text-rose-500"></i> untuk kemudahan akses aplikasi
+                    </p>
+                </div>
+            </div>
+<!-- END BLOK 4 -->
+
+
+<!-- ===== HALAMAN DASBOR IKLAN APLIKASI → BLOK 5 - DASBOR IKLAN APLIKASI PRO - HALAMAN LOGIN ADMIN ===== -->
+<!-- ============================================================
+     BLOK 5 - DASBOR IKLAN APLIKASI PRO - HALAMAN LOGIN ADMIN
+
+     (Form Login Admin, Tidak Ada Daftar, Lupa Password)
+     ============================================================ -->
+            <div id="page-login-admin" class="hidden space-y-5 page-transition">
+                
+                <!-- HEADER -->
+                <div class="text-center">
+                    <div class="text-4xl mb-2">🔐</div>
+                    <h2 class="text-xl font-bold text-slate-700">Login Admin</h2>
+                    <p class="text-slate-400 text-xs mt-1">Masuk untuk mengelola aplikasi dan profil</p>
+                </div>
+                
+                <!-- ERROR MESSAGE -->
+                <div id="login-admin-error" class="hidden bg-red-50 text-red-600 text-xs p-3.5 rounded-xl border border-red-200 text-center font-medium flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span id="login-admin-error-text"></span>
+                </div>
+                
+                <!-- FORM -->
+                <div class="space-y-4">
+                    <!-- USERNAME -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                            <i class="fa-solid fa-user text-indigo-400 mr-1"></i> Username
+                        </label>
+                        <input type="text" id="admin-username" 
+                               class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm transition-all"
+                               placeholder="Masukkan username admin"
+                               autocomplete="username"
+                               onkeydown="if(event.key==='Enter')document.getElementById('admin-password').focus()">
+                    </div>
+                    
+                    <!-- PASSWORD -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                            <i class="fa-solid fa-lock text-indigo-400 mr-1"></i> Password
+                        </label>
+                        <div class="relative">
+                            <input type="password" id="admin-password" 
+                                   class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm transition-all pr-10"
+                                   placeholder="••••••••"
+                                   autocomplete="current-password"
+                                   onkeydown="if(event.key==='Enter')handleAdminLogin()">
+                            <button onclick="togglePassVisibility('admin-password', this)" 
+                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-500 cursor-pointer"
+                                    tabindex="-1">
+                                <i class="fa-solid fa-eye text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- TOMBOL LOGIN -->
+                <button onclick="handleAdminLogin()" 
+                        class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-indigo-500/25 active:scale-[0.97] transition-all cursor-pointer text-sm tracking-wide">
+                    <i class="fa-solid fa-right-to-bracket mr-2"></i> Masuk ke Panel Admin
+                </button>
+                
+                <!-- LINK LUPA PASSWORD -->
+                <div class="text-center pt-1">
+                    <button onclick="switchPage('page-forgot-admin')" 
+                            class="text-xs font-medium text-indigo-500 hover:text-indigo-600 cursor-pointer transition-colors">
+                        <i class="fa-solid fa-circle-question mr-1"></i> Lupa Password?
+                    </button>
+                </div>
+                
+                <!-- KEMBALI KE HALAMAN DEPAN -->
+                <div class="text-center pt-2 border-t border-slate-100">
+                    <button onclick="switchPage('page-home')" 
+                            class="text-xs font-medium text-slate-400 hover:text-indigo-500 cursor-pointer transition-colors">
+                        <i class="fa-solid fa-arrow-left mr-1"></i> Kembali ke Halaman Depan
+                    </button>
+                </div>
+            </div>
+<!-- END BLOK 5 -->
+
+
+<!-- ===== HALAMAN DASBOR IKLAN APLIKASI → BLOK 6 - DASBOR IKLAN APLIKASI PRO - HALAMAN LUPA PASSWORD ===== -->
+<!-- ============================================================
+     BLOK 6 - DASBOR IKLAN APLIKASI PRO - HALAMAN LUPA PASSWORD
+     (Konfirmasi Identitas & Reset Password Admin)
+     ============================================================ -->
+            <!-- HALAMAN LUPA PASSWORD ADMIN -->
+            <div id="page-forgot-admin" class="hidden space-y-5 page-transition">
+                
+                <!-- HEADER -->
+                <div class="text-center">
+                    <div class="text-4xl mb-2">🔑</div>
+                    <h2 class="text-xl font-bold text-slate-700">Lupa Password</h2>
+                    <p class="text-slate-400 text-xs mt-1">Masukkan email atau nomor HP yang terdaftar</p>
+                </div>
+                
+                <!-- ERROR MESSAGE -->
+                <div id="forgot-admin-error" class="hidden bg-red-50 text-red-600 text-xs p-3.5 rounded-xl border border-red-200 text-center font-medium flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span id="forgot-admin-error-text"></span>
+                </div>
+                
+                <!-- FORM KONFIRMASI -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                        <i class="fa-solid fa-envelope text-indigo-400 mr-1"></i> Email / No. HP
+                    </label>
+                    <input type="text" id="forgot-admin-input" 
+                           class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm transition-all"
+                           placeholder="Masukkan email atau nomor HP admin"
+                           onkeydown="if(event.key==='Enter')handleAdminForgot()">
+                    <p class="text-[10px] text-slate-400 mt-1.5">
+                        <i class="fa-solid fa-circle-info mr-1"></i> 
+                        Data harus sesuai dengan yang terdaftar di sistem
+                    </p>
+                </div>
+                
+                <!-- TOMBOL -->
+                <div class="flex space-x-3 pt-2">
+                    <button onclick="switchPage('page-login-admin')" 
+                            class="w-1/3 bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold py-3 rounded-xl text-xs cursor-pointer transition-all active:scale-95">
+                        <i class="fa-solid fa-arrow-left mr-1"></i> Batal
+                    </button>
+                    <button onclick="handleAdminForgot()" 
+                            class="w-2/3 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-3 rounded-xl text-xs cursor-pointer transition-all active:scale-95 shadow-md">
+                        <i class="fa-solid fa-check mr-1"></i> Konfirmasi Identitas
+                    </button>
+                </div>
+                
+                <!-- KEMBALI KE HALAMAN DEPAN -->
+                <div class="text-center pt-2 border-t border-slate-100">
+                    <button onclick="switchPage('page-home')" 
+                            class="text-xs font-medium text-slate-400 hover:text-indigo-500 cursor-pointer transition-colors">
+                        <i class="fa-solid fa-arrow-left mr-1"></i> Kembali ke Halaman Depan
+                    </button>
+                </div>
+            </div>
+
+            <!-- HALAMAN RESET PASSWORD ADMIN -->
+            <div id="page-reset-admin" class="hidden space-y-5 page-transition">
+                
+                <!-- HEADER -->
+                <div class="text-center">
+                    <div class="text-4xl mb-2">🔄</div>
+                    <h2 class="text-xl font-bold text-slate-700">Buat Password Baru</h2>
+                    <p class="text-slate-400 text-xs mt-1">Demi keamanan, silakan ganti password admin</p>
+                </div>
+                
+                <!-- ERROR MESSAGE -->
+                <div id="reset-admin-error" class="hidden bg-red-50 text-red-600 text-xs p-3.5 rounded-xl border border-red-200 text-center font-medium flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span id="reset-admin-error-text"></span>
+                </div>
+                
+                <!-- FORM -->
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                            <i class="fa-solid fa-lock text-emerald-400 mr-1"></i> Password Baru
+                        </label>
+                        <div class="relative">
+                            <input type="password" id="reset-admin-pass" 
+                                   class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-sm transition-all pr-10"
+                                   placeholder="Masukkan password baru (min. 6 karakter)"
+                                   onkeydown="if(event.key==='Enter')document.getElementById('reset-admin-pass-confirm').focus()">
+                            <button onclick="togglePassVisibility('reset-admin-pass', this)" 
+                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-emerald-500 cursor-pointer"
+                                    tabindex="-1">
+                                <i class="fa-solid fa-eye text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                            <i class="fa-solid fa-lock text-emerald-400 mr-1"></i> Konfirmasi Password Baru
+                        </label>
+                        <div class="relative">
+                            <input type="password" id="reset-admin-pass-confirm" 
+                                   class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-sm transition-all pr-10"
+                                   placeholder="Ulangi password baru"
+                                   onkeydown="if(event.key==='Enter')handleAdminReset()">
+                            <button onclick="togglePassVisibility('reset-admin-pass-confirm', this)" 
+                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-emerald-500 cursor-pointer"
+                                    tabindex="-1">
+                                <i class="fa-solid fa-eye text-xs"></i>
+                            </button>
+                        </div>
+                        <p class="text-[10px] text-slate-400 mt-1.5">
+                            <i class="fa-solid fa-circle-info mr-1"></i> 
+                            Minimal 6 karakter, gunakan kombinasi huruf & angka
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- TOMBOL -->
+                <button onclick="handleAdminReset()" 
+                        class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-emerald-500/20 active:scale-[0.97] transition-all cursor-pointer text-sm tracking-wide">
+                    <i class="fa-solid fa-floppy-disk mr-2"></i> Simpan Password Baru
+                </button>
+                
+                <!-- KEMBALI KE LOGIN -->
+                <div class="text-center">
+                    <button onclick="switchPage('page-login-admin')" 
+                            class="text-xs font-medium text-slate-400 hover:text-indigo-500 cursor-pointer transition-colors">
+                        <i class="fa-solid fa-arrow-left mr-1"></i> Kembali ke Login
+                    </button>
+                </div>
+            </div>
+<!-- END BLOK 6 -->
+
+
+<!-- ===== HALAMAN DASBOR IKLAN APLIKASI → BLOK 7 - DASBOR IKLAN APLIKASI PRO - HALAMAN ADMIN DASHBOARD ===== -->
+<!-- ============================================================
+     BLOK 7 - DASBOR IKLAN APLIKASI PRO - HALAMAN ADMIN DASHBOARD
+     (Statistik, Daftar Aplikasi, Tambah/Edit/Hapus)
+     ============================================================ -->
+            <div id="page-admin-dashboard" class="hidden space-y-5 page-transition">
+                
+                <!-- HEADER -->
+                <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                    <div>
+                        <span class="px-2 py-0.5 text-[9px] font-extrabold bg-indigo-100 text-indigo-700 rounded-full uppercase tracking-wider">
+                            <i class="fa-solid fa-crown mr-1"></i> Panel Admin
+                        </span>
+                        <h2 class="text-sm font-bold text-slate-700 mt-1 flex items-center gap-2">
+                            <i class="fa-solid fa-gauge-high text-indigo-500"></i> Dashboard Admin
+                        </h2>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="openEditProfileModal()" 
+                                class="text-xs font-semibold bg-indigo-50 hover:bg-indigo-100 text-indigo-600 px-2.5 py-1.5 rounded-lg transition-all cursor-pointer">
+                            <i class="fa-solid fa-user-pen mr-1"></i> Edit Profil
+                        </button>
+                        <button onclick="handleAdminLogout()" 
+                                class="text-xs font-semibold bg-slate-100 hover:bg-red-50 hover:text-red-600 text-slate-500 px-3 py-1.5 rounded-lg transition-all cursor-pointer">
+                            <i class="fa-solid fa-right-from-bracket mr-1"></i> Keluar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STATISTIK ADMIN -->
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-100 rounded-2xl p-3.5 text-center">
+                        <div class="text-xl font-extrabold text-indigo-600" id="admin-stat-apps">0</div>
+                        <div class="text-[9px] font-semibold text-slate-500 uppercase">Total Aplikasi</div>
+                    </div>
+                    <div class="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-100 rounded-2xl p-3.5 text-center">
+                        <div class="text-xl font-extrabold text-emerald-600">-</div>
+                        <div class="text-[9px] font-semibold text-slate-500 uppercase">Total Klik</div>
+                    </div>
+                    <div class="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100 rounded-2xl p-3.5 text-center">
+                        <div class="text-xl font-extrabold text-amber-600" id="admin-stat-last-update">-</div>
+                        <div class="text-[9px] font-semibold text-slate-500 uppercase">Update Terakhir</div>
+                    </div>
+                </div>
+
+                <!-- TOMBOL TAMBAH APLIKASI -->
+                <button onclick="openAppFormModal()" 
+                        class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold py-3 rounded-xl text-sm shadow-lg shadow-indigo-500/20 active:scale-[0.97] transition-all cursor-pointer flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-plus-circle"></i> Tambah Aplikasi Baru
+                </button>
+
+                <!-- DAFTAR APLIKASI (ADMIN) -->
+                <div class="space-y-2">
+                    <h3 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider flex items-center gap-2 px-1">
+                        <i class="fa-solid fa-list-check text-indigo-400"></i> Daftar Aplikasi
+                        <span id="admin-app-count" class="bg-indigo-100 text-indigo-600 px-2 py-0.5 rounded-full text-[9px]">0</span>
+                    </h3>
+                    <div id="admin-app-list" class="space-y-2 max-h-[400px] overflow-y-auto pr-1">
+                        <div class="text-center text-slate-400 py-6 text-xs italic">Memuat daftar aplikasi...</div>
+                    </div>
+                    
+                    <div id="admin-app-empty" class="text-center py-8 hidden">
+                        <div class="text-4xl mb-2">📭</div>
+                        <p class="text-xs text-slate-400 font-medium">Belum ada aplikasi</p>
+                        <p class="text-[10px] text-slate-400 mt-1">Klik tombol di atas untuk menambahkan aplikasi pertama</p>
+                    </div>
+                </div>
+
+                <!-- KEMBALI KE HALAMAN DEPAN -->
+                <div class="text-center pt-2 border-t border-slate-100">
+                    <button onclick="switchPage('page-home')" 
+                            class="text-xs font-medium text-slate-400 hover:text-indigo-500 cursor-pointer transition-colors">
+                        <i class="fa-solid fa-arrow-left mr-1"></i> Kembali ke Halaman Depan
+                    </button>
+                </div>
+            </div>
+<!-- END BLOK 7 -->
+
+
+<!-- ===== HALAMAN DASBOR IKLAN APLIKASI → BLOK 8 - DASBOR IKLAN APLIKASI PRO - MODAL TAMBAH/EDIT APLIKASI ===== -->
+<!-- ============================================================
+     BLOK 8 - DASBOR IKLAN APLIKASI PRO - MODAL TAMBAH/EDIT APLIKASI
+     (Form Nama, Link, Deskripsi, Ikon)
+     ============================================================ -->
+
+<!-- MODAL TAMBAH/EDIT APLIKASI -->
+<div id="appFormModal" class="modal-overlay hidden">
+    <div class="modal-content" style="max-width:450px;">
+        
+        <!-- HEADER MODAL -->
+        <div class="bg-gradient-to-br from-indigo-600 to-purple-700 text-white p-5 rounded-t-2xl flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center">
+                    <i class="fa-solid fa-puzzle-piece text-white"></i>
+                </div>
+                <div>
+                    <h3 id="app-form-title" class="font-bold text-base">Tambah Aplikasi Baru</h3>
+                    <p class="text-[10px] text-indigo-200">Isi data aplikasi dengan lengkap</p>
+                </div>
+            </div>
+            <button onclick="closeAppFormModal()" class="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center cursor-pointer transition-all text-white">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <!-- BODY MODAL -->
+        <div class="p-5 space-y-4">
+            <input type="hidden" id="edit-app-id" value="-1">
+            
+            <!-- NAMA APLIKASI -->
+            <div>
+                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nama Aplikasi *</label>
+                <input type="text" id="app-name" 
+                       class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                       placeholder="Contoh: NotepadPro">
+            </div>
+            
+            <!-- LINK APLIKASI -->
+            <div>
+                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Link Aplikasi *</label>
+                <input type="text" id="app-link" 
+                       class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                       placeholder="Contoh: https://notepadpro.html atau file.html">
+                <p class="text-[9px] text-slate-400 mt-1">
+                    <i class="fa-solid fa-circle-info mr-1"></i> Bisa link online atau nama file HTML
+                </p>
+            </div>
+            
+            <!-- DESKRIPSI -->
+            <div>
+                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Deskripsi Singkat</label>
+                <input type="text" id="app-description" 
+                       class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                       placeholder="Contoh: Aplikasi catatan ringan dan offline">
+            </div>
+            
+            <!-- IKON (EMOJI) -->
+            <div>
+                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Ikon (Emoji)</label>
+                <input type="text" id="app-icon" 
+                       class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                       placeholder="Contoh: 📝"
+                       maxlength="2">
+                <p class="text-[9px] text-slate-400 mt-1">
+                    <i class="fa-solid fa-circle-info mr-1"></i> Gunakan 1-2 emoji sebagai ikon aplikasi
+                </p>
+            </div>
+            
+            <!-- TOMBOL -->
+            <div class="flex space-x-2 pt-2">
+                <button onclick="closeAppFormModal()" 
+                        class="w-1/3 bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold py-2.5 rounded-xl text-xs cursor-pointer transition-all">
+                    <i class="fa-solid fa-xmark mr-1"></i> Batal
+                </button>
+                <button onclick="saveAppData()" 
+                        class="w-2/3 bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2.5 rounded-xl text-xs cursor-pointer transition-all active:scale-95 shadow-md flex items-center justify-center gap-1">
+                    <i class="fa-solid fa-floppy-disk mr-1"></i> Simpan Aplikasi
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END BLOK 8 -->
+
+
+<!-- ===== HALAMAN DASBOR IKLAN APLIKASI → BLOK 9 - DASBOR IKLAN APLIKASI PRO - MODAL EDIT PROFIL & TEKS ===== -->
+<!-- ============================================================
+     BLOK 9 - DASBOR IKLAN APLIKASI PRO - MODAL EDIT PROFIL & TEKS
+     (Edit Nama, Deskripsi, Kontak, Subtitle, Judul Aplikasi)
+     ============================================================ -->
+
+<!-- MODAL EDIT PROFIL & TEKS -->
+<div id="profileEditModal" class="modal-overlay hidden">
+    <div class="modal-content" style="max-width:450px;">
+        
+        <!-- HEADER MODAL -->
+        <div class="bg-gradient-to-br from-indigo-600 to-purple-700 text-white p-5 rounded-t-2xl flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center">
+                    <i class="fa-solid fa-user-pen text-white"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-base">Edit Profil & Teks</h3>
+                    <p class="text-[10px] text-indigo-200">Ubah profil pengembang dan teks halaman</p>
+                </div>
+            </div>
+            <button onclick="closeProfileEditModal()" class="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center cursor-pointer transition-all text-white">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <!-- BODY MODAL -->
+        <div class="p-5 space-y-4 max-h-[60vh] overflow-y-auto">
+            
+            <!-- BAGIAN PROFIL -->
+            <div class="bg-slate-50 rounded-xl p-4 border border-slate-100 space-y-3">
+                <h4 class="text-xs font-bold text-slate-500 uppercase flex items-center gap-2">
+                    <i class="fa-solid fa-id-card text-indigo-500"></i> Profil Pengembang
+                </h4>
+                
+                <!-- NAMA PENGEMBANG -->
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nama Pengembang</label>
+                    <input type="text" id="edit-profile-name" 
+                           class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                           placeholder="Nama pengembang">
+                </div>
+                
+                <!-- ROLE -->
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Role / Jabatan</label>
+                    <input type="text" id="edit-profile-role" 
+                           class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                           placeholder="Contoh: Developer & Founder">
+                </div>
+                
+                <!-- DESKRIPSI PROFIL -->
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Deskripsi Profil</label>
+                    <textarea id="edit-profile-description" 
+                              class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all resize-none"
+                              rows="3"
+                              placeholder="Deskripsi singkat tentang pengembang"></textarea>
+                </div>
+                
+                <!-- KONTAK -->
+                <div class="grid grid-cols-3 gap-2">
+                    <div>
+                        <label class="block text-[9px] font-bold text-slate-500 uppercase mb-1">WhatsApp</label>
+                        <input type="text" id="edit-profile-wa" 
+                               class="w-full px-2 py-2 bg-white border border-slate-200 rounded-lg text-[10px] focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                               placeholder="08xxx">
+                    </div>
+                    <div>
+                        <label class="block text-[9px] font-bold text-slate-500 uppercase mb-1">Telegram</label>
+                        <input type="text" id="edit-profile-telegram" 
+                               class="w-full px-2 py-2 bg-white border border-slate-200 rounded-lg text-[10px] focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                               placeholder="@username">
+                    </div>
+                    <div>
+                        <label class="block text-[9px] font-bold text-slate-500 uppercase mb-1">Email</label>
+                        <input type="text" id="edit-profile-email" 
+                               class="w-full px-2 py-2 bg-white border border-slate-200 rounded-lg text-[10px] focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                               placeholder="email@example.com">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- BAGIAN TEKS HALAMAN -->
+            <div class="bg-slate-50 rounded-xl p-4 border border-slate-100 space-y-3">
+                <h4 class="text-xs font-bold text-slate-500 uppercase flex items-center gap-2">
+                    <i class="fa-solid fa-text-height text-purple-500"></i> Teks Halaman Depan
+                </h4>
+                
+                <!-- SUBTITLE -->
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Subtitle Halaman Depan</label>
+                    <input type="text" id="edit-home-subtitle" 
+                           class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                           placeholder="Contoh: Semua Aplikasi Ringan dan Mudah Digunakan">
+                </div>
+                
+                <!-- JUDUL DAFTAR APLIKASI -->
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Judul Daftar Aplikasi</label>
+                    <input type="text" id="edit-app-list-title" 
+                           class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                           placeholder="Contoh: 100 Aplikasi Pro">
+                </div>
+                
+                <!-- STATISTIK -->
+                <div class="grid grid-cols-3 gap-2">
+                    <div>
+                        <label class="block text-[9px] font-bold text-slate-500 uppercase mb-1">Jumlah Aplikasi</label>
+                        <input type="text" id="edit-stat-apps" 
+                               class="w-full px-2 py-2 bg-white border border-slate-200 rounded-lg text-[10px] focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                               placeholder="100">
+                    </div>
+                    <div>
+                        <label class="block text-[9px] font-bold text-slate-500 uppercase mb-1">Pengguna</label>
+                        <input type="text" id="edit-stat-users" 
+                               class="w-full px-2 py-2 bg-white border border-slate-200 rounded-lg text-[10px] focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                               placeholder="50K">
+                    </div>
+                    <div>
+                        <label class="block text-[9px] font-bold text-slate-500 uppercase mb-1">Update/Bulan</label>
+                        <input type="text" id="edit-stat-updates" 
+                               class="w-full px-2 py-2 bg-white border border-slate-200 rounded-lg text-[10px] focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                               placeholder="12">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- TOMBOL -->
+            <div class="flex space-x-2 pt-2">
+                <button onclick="closeProfileEditModal()" 
+                        class="w-1/3 bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold py-2.5 rounded-xl text-xs cursor-pointer transition-all">
+                    <i class="fa-solid fa-xmark mr-1"></i> Batal
+                </button>
+                <button onclick="saveProfileData()" 
+                        class="w-2/3 bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2.5 rounded-xl text-xs cursor-pointer transition-all active:scale-95 shadow-md flex items-center justify-center gap-1">
+                    <i class="fa-solid fa-floppy-disk mr-1"></i> Simpan Perubahan
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END BLOK 9 -->
+
+
+<!-- ===== HALAMAN DASBOR IKLAN APLIKASI → BLOK 10 - DASBOR IKLAN APLIKASI PRO - MODAL KONFIRMASI HAPUS ===== -->
+<!-- ============================================================
+     BLOK 10 - DASBOR IKLAN APLIKASI PRO - MODAL KONFIRMASI HAPUS
+     (Konfirmasi Hapus Aplikasi)
+     ============================================================ -->
+
+<!-- MODAL KONFIRMASI HAPUS APLIKASI -->
+<div id="deleteConfirmModal" class="modal-overlay hidden">
+    <div class="modal-content" style="max-width:400px;">
+        
+        <!-- HEADER MODAL -->
+        <div class="bg-gradient-to-br from-red-500 to-rose-600 text-white p-5 rounded-t-2xl text-center">
+            <div class="text-4xl mb-2">⚠️</div>
+            <h3 class="font-bold text-base">Konfirmasi Hapus</h3>
+            <p class="text-[10px] text-red-100 mt-1">Tindakan ini tidak dapat dibatalkan!</p>
+        </div>
+
+        <!-- BODY MODAL -->
+        <div class="p-5 space-y-4 text-center">
+            <p class="text-sm text-slate-600 font-medium">
+                Apakah Anda yakin ingin menghapus aplikasi berikut?
+            </p>
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                <div class="text-3xl mb-2" id="delete-app-icon">📝</div>
+                <h4 class="text-sm font-extrabold text-slate-800" id="delete-app-name">Nama Aplikasi</h4>
+                <p class="text-[10px] text-slate-400 mt-1" id="delete-app-link">link-aplikasi</p>
+            </div>
+            <p class="text-[10px] text-red-500 font-medium">
+                <i class="fa-solid fa-triangle-exclamation mr-1"></i> 
+                Data yang dihapus tidak bisa dikembalikan!
+            </p>
+            
+            <!-- TOMBOL -->
+            <div class="flex space-x-3 pt-2">
+                <button onclick="closeDeleteConfirmModal()" 
+                        class="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold py-3 rounded-xl text-xs cursor-pointer transition-all">
+                    <i class="fa-solid fa-xmark mr-1"></i> Batal
+                </button>
+                <button onclick="confirmDeleteApp()" 
+                        class="w-1/2 bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl text-xs cursor-pointer transition-all active:scale-95 shadow-md flex items-center justify-center gap-1">
+                    <i class="fa-solid fa-trash mr-1"></i> Ya, Hapus
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END BLOK 10 -->
+
+
+<!-- ===== HALAMAN DASBOR IKLAN APLIKASI → BLOK 10 - DASBOR IKLAN APLIKASI PRO - MODAL KONFIRMASI HAPUS ===== -->
+<!-- ============================================================
+     BLOK 10 - DASBOR IKLAN APLIKASI PRO - MODAL KONFIRMASI HAPUS
+     (Konfirmasi Hapus Aplikasi)
+     ============================================================ -->
+
+<!-- MODAL KONFIRMASI HAPUS APLIKASI -->
+<div id="deleteConfirmModal" class="modal-overlay hidden">
+    <div class="modal-content" style="max-width:400px;">
+        
+        <!-- HEADER MODAL -->
+        <div class="bg-gradient-to-br from-red-500 to-rose-600 text-white p-5 rounded-t-2xl text-center">
+            <div class="text-4xl mb-2">⚠️</div>
+            <h3 class="font-bold text-base">Konfirmasi Hapus</h3>
+            <p class="text-[10px] text-red-100 mt-1">Tindakan ini tidak dapat dibatalkan!</p>
+        </div>
+
+        <!-- BODY MODAL -->
+        <div class="p-5 space-y-4 text-center">
+            <p class="text-sm text-slate-600 font-medium">
+                Apakah Anda yakin ingin menghapus aplikasi berikut?
+            </p>
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                <div class="text-3xl mb-2" id="delete-app-icon">📝</div>
+                <h4 class="text-sm font-extrabold text-slate-800" id="delete-app-name">Nama Aplikasi</h4>
+                <p class="text-[10px] text-slate-400 mt-1" id="delete-app-link">link-aplikasi</p>
+            </div>
+            <p class="text-[10px] text-red-500 font-medium">
+                <i class="fa-solid fa-triangle-exclamation mr-1"></i> 
+                Data yang dihapus tidak bisa dikembalikan!
+            </p>
+            
+            <!-- TOMBOL -->
+            <div class="flex space-x-3 pt-2">
+                <button onclick="closeDeleteConfirmModal()" 
+                        class="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold py-3 rounded-xl text-xs cursor-pointer transition-all">
+                    <i class="fa-solid fa-xmark mr-1"></i> Batal
+                </button>
+                <button onclick="confirmDeleteApp()" 
+                        class="w-1/2 bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl text-xs cursor-pointer transition-all active:scale-95 shadow-md flex items-center justify-center gap-1">
+                    <i class="fa-solid fa-trash mr-1"></i> Ya, Hapus
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END BLOK 10 -->
