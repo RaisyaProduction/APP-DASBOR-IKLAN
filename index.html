@@ -975,3 +975,1193 @@
     </div>
 </div>
 <!-- END BLOK 10 -->
+
+
+<!-- ===== HALAMAN DASBOR IKLAN APLIKASI → BLOK 11 - DASBOR IKLAN APLIKASI PRO - JAVASCRIPT ===== -->
+<!-- ============================================================
+     BLOK 11 - DASBOR IKLAN APLIKASI PRO - JAVASCRIPT
+     (Auth, CRUD Aplikasi, Edit Profil, Render, Navigasi)
+     ============================================================ -->
+    <script>
+        // ========== DATABASE ==========
+        let adminData = JSON.parse(localStorage.getItem('applist_admin')) || {
+            username: "admin",
+            password: "admin123",
+            email: "admin@aplikasipro.com",
+            hp: "081234567890"
+        };
+
+        let appList = JSON.parse(localStorage.getItem('applist_apps')) || [];
+
+        let profileData = JSON.parse(localStorage.getItem('applist_profil')) || {
+            nama: "Radhika",
+            role: "Developer & Founder",
+            deskripsi: "Pengembang aplikasi web profesional. Fokus pada aplikasi ringan, cepat, dan mudah digunakan untuk semua kalangan.",
+            wa: "081220285226",
+            telegram: "@radhika_dev",
+            email: "radhika@aplikasipro.com"
+        };
+
+        let pageTexts = JSON.parse(localStorage.getItem('applist_teks')) || {
+            subtitle: "Semua Aplikasi Ringan dan Mudah Digunakan",
+            judulApps: "100 Aplikasi Pro",
+            statApps: "100",
+            statUsers: "50K",
+            statUpdates: "12"
+        };
+
+        let currentAdmin = false;
+        let appPage = 1;
+        const appsPerPage = 20;
+        let deleteAppId = null;
+
+        // ========== FUNGSI SIMPAN ==========
+        function saveAdminData() { localStorage.setItem('applist_admin', JSON.stringify(adminData)); }
+        function saveAppList() { localStorage.setItem('applist_apps', JSON.stringify(appList)); }
+        function saveProfileData() { localStorage.setItem('applist_profil', JSON.stringify(profileData)); }
+        function savePageTexts() { localStorage.setItem('applist_teks', JSON.stringify(pageTexts)); }
+
+        // ========== TOAST NOTIFICATION ==========
+        function showToast(msg, type) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast toast-' + (type || 'info');
+            toast.textContent = msg;
+            container.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.add('show'));
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // ========== TOGGLE PASSWORD VISIBILITY ==========
+        function togglePassVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fa-solid fa-eye-slash text-xs';
+            } else {
+                input.type = 'password';
+                icon.className = 'fa-solid fa-eye text-xs';
+            }
+        }
+
+        // ========== NAVIGASI HALAMAN ==========
+        function switchPage(pageId) {
+            const pages = [
+                'page-home', 'page-login-admin', 'page-forgot-admin', 'page-reset-admin',
+                'page-admin-dashboard'
+            ];
+            pages.forEach(p => {
+                const el = document.getElementById(p);
+                if (el) el.classList.add('hidden');
+            });
+            const target = document.getElementById(pageId);
+            if (target) {
+                target.classList.remove('hidden');
+                target.classList.add('page-transition');
+            }
+
+            if (pageId === 'page-home') {
+                renderAppList();
+                loadProfileAndTexts();
+            }
+            if (pageId === 'page-admin-dashboard') {
+                renderAdminAppList();
+                updateAdminStats();
+            }
+        }
+
+        // ========== AUTH ADMIN ==========
+        function handleAdminLogin() {
+            const userInp = document.getElementById('admin-username').value.trim();
+            const passInp = document.getElementById('admin-password').value.trim();
+            const errEl = document.getElementById('login-admin-error');
+            const errText = document.getElementById('login-admin-error-text');
+
+            if (!userInp || !passInp) {
+                errEl.classList.remove('hidden');
+                errText.textContent = 'Semua field wajib diisi!';
+                return;
+            }
+
+            if (userInp === adminData.username && passInp === adminData.password) {
+                currentAdmin = true;
+                errEl.classList.add('hidden');
+                document.getElementById('admin-username').value = '';
+                document.getElementById('admin-password').value = '';
+                switchPage('page-admin-dashboard');
+                showToast('✅ Selamat datang, Admin!', 'success');
+            } else {
+                errEl.classList.remove('hidden');
+                errText.textContent = 'Username atau Password salah!';
+            }
+        }
+
+        function handleAdminForgot() {
+            const val = document.getElementById('forgot-admin-input').value.trim();
+            const errEl = document.getElementById('forgot-admin-error');
+            const errText = document.getElementById('forgot-admin-error-text');
+
+            if (!val) {
+                errEl.classList.remove('hidden');
+                errText.textContent = 'Masukkan email atau nomor HP!';
+                return;
+            }
+
+            if (val === adminData.email || val === adminData.hp) {
+                errEl.classList.add('hidden');
+                document.getElementById('forgot-admin-input').value = '';
+                switchPage('page-reset-admin');
+                showToast('✅ Identitas valid. Silakan buat password baru.', 'success');
+            } else {
+                errEl.classList.remove('hidden');
+                errText.textContent = 'Data tidak cocok dengan yang terdaftar!';
+            }
+        }
+
+        function handleAdminReset() {
+            const newPass = document.getElementById('reset-admin-pass').value.trim();
+            const confirmPass = document.getElementById('reset-admin-pass-confirm').value.trim();
+            const errEl = document.getElementById('reset-admin-error');
+            const errText = document.getElementById('reset-admin-error-text');
+
+            if (!newPass || !confirmPass) {
+                errEl.classList.remove('hidden');
+                errText.textContent = 'Semua field wajib diisi!';
+                return;
+            }
+
+            if (newPass.length < 6) {
+                errEl.classList.remove('hidden');
+                errText.textContent = 'Password minimal 6 karakter!';
+                return;
+            }
+
+            if (newPass !== confirmPass) {
+                errEl.classList.remove('hidden');
+                errText.textContent = 'Password tidak cocok!';
+                return;
+            }
+
+            adminData.password = newPass;
+            saveAdminData();
+            document.getElementById('reset-admin-pass').value = '';
+            document.getElementById('reset-admin-pass-confirm').value = '';
+            errEl.classList.add('hidden');
+            switchPage('page-login-admin');
+            showToast('✅ Password berhasil diubah! Silakan login.', 'success');
+        }
+
+        function handleAdminLogout() {
+            if (confirm('Apakah Anda yakin ingin keluar dari panel admin?')) {
+                currentAdmin = false;
+                switchPage('page-home');
+                showToast('👋 Anda telah logout dari panel admin.', 'info');
+            }
+        }
+
+        // ========== RENDER DAFTAR APLIKASI (HALAMAN DEPAN) ==========
+        function renderAppList() {
+            const container = document.getElementById('app-grid-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const startIndex = (appPage - 1) * appsPerPage;
+            const endIndex = startIndex + appsPerPage;
+            const pageApps = appList.slice(startIndex, endIndex);
+
+            if (pageApps.length === 0) {
+                document.getElementById('app-empty-state').classList.remove('hidden');
+            } else {
+                document.getElementById('app-empty-state').classList.add('hidden');
+            }
+
+            pageApps.forEach(app => {
+                container.innerHTML += `
+                    <div onclick="openApp('${app.id}')" 
+                         class="app-card bg-white border border-slate-200 rounded-2xl p-4 text-center cursor-pointer hover:border-indigo-300 transition-all">
+                        <div class="text-3xl mb-2">${app.ikon || '📱'}</div>
+                        <h4 class="text-xs font-bold text-slate-700 truncate">${app.nama}</h4>
+                        <p class="text-[9px] text-slate-400 mt-1 truncate">${app.deskripsi || 'Klik untuk membuka'}</p>
+                    </div>`;
+            });
+
+            document.getElementById('app-page-info').textContent = 'Halaman ' + appPage;
+            document.getElementById('btn-prev-page').disabled = appPage === 1;
+            document.getElementById('btn-next-page').disabled = endIndex >= appList.length;
+        }
+
+        function filterAppList() {
+            const searchTerm = document.getElementById('app-search-input').value.toLowerCase().trim();
+            const container = document.getElementById('app-grid-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const clearBtn = document.getElementById('app-search-clear');
+            if (searchTerm.length > 0) {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+
+            const filteredApps = searchTerm.length > 0 
+                ? appList.filter(app => app.nama.toLowerCase().includes(searchTerm))
+                : appList.slice(0, appsPerPage);
+
+            if (filteredApps.length === 0) {
+                document.getElementById('app-empty-state').classList.remove('hidden');
+                document.getElementById('app-pagination').style.display = 'none';
+            } else {
+                document.getElementById('app-empty-state').classList.add('hidden');
+                document.getElementById('app-pagination').style.display = searchTerm.length > 0 ? 'none' : '';
+            }
+
+            filteredApps.forEach(app => {
+                container.innerHTML += `
+                    <div onclick="openApp('${app.id}')" 
+                         class="app-card bg-white border border-slate-200 rounded-2xl p-4 text-center cursor-pointer hover:border-indigo-300 transition-all">
+                        <div class="text-3xl mb-2">${app.ikon || '📱'}</div>
+                        <h4 class="text-xs font-bold text-slate-700 truncate">${app.nama}</h4>
+                        <p class="text-[9px] text-slate-400 mt-1 truncate">${app.deskripsi || 'Klik untuk membuka'}</p>
+                    </div>`;
+            });
+        }
+
+        function clearAppSearch() {
+            document.getElementById('app-search-input').value = '';
+            document.getElementById('app-search-clear').classList.add('hidden');
+            appPage = 1;
+            renderAppList();
+            document.getElementById('app-pagination').style.display = '';
+        }
+
+        function openApp(appId) {
+            const app = appList.find(a => a.id == appId);
+            if (!app || !app.link) {
+                showToast('⚠️ Link aplikasi belum diatur!', 'warning');
+                return;
+            }
+            window.open(app.link, '_blank');
+        }
+
+        function prevAppPage() {
+            if (appPage > 1) {
+                appPage--;
+                renderAppList();
+            }
+        }
+
+        function nextAppPage() {
+            const totalPages = Math.ceil(appList.length / appsPerPage);
+            if (appPage < totalPages) {
+                appPage++;
+                renderAppList();
+            }
+        }
+
+        // ========== LOAD PROFIL & TEKS ==========
+        function loadProfileAndTexts() {
+            document.getElementById('home-subtitle').textContent = pageTexts.subtitle;
+            document.getElementById('app-list-title').innerHTML = pageTexts.judulApps;
+            document.getElementById('stat-total-apps').textContent = pageTexts.statApps;
+            document.getElementById('stat-total-users').textContent = pageTexts.statUsers;
+            document.getElementById('stat-total-updates').textContent = pageTexts.statUpdates;
+            document.getElementById('profile-name').textContent = profileData.nama;
+            document.getElementById('profile-role').textContent = profileData.role;
+            document.getElementById('profile-description').textContent = profileData.deskripsi;
+            
+            const waLink = document.getElementById('profile-wa');
+            const telegramLink = document.getElementById('profile-telegram');
+            const emailLink = document.getElementById('profile-email');
+            
+            if (waLink) waLink.href = 'https://wa.me/' + profileData.wa.replace(/[^0-9]/g, '');
+            if (telegramLink) telegramLink.href = 'https://t.me/' + profileData.telegram.replace('@', '');
+            if (emailLink) emailLink.href = 'mailto:' + profileData.email;
+        }
+
+        function contactAdmin() {
+            const waNumber = profileData.wa.replace(/[^0-9]/g, '');
+            window.open('https://wa.me/' + waNumber, '_blank');
+        }
+
+        // ========== MODAL APLIKASI ==========
+        function openAppFormModal(appId = null) {
+            document.getElementById('appFormModal').classList.remove('hidden');
+            resetAppForm();
+
+            if (appId !== null) {
+                const app = appList.find(a => a.id == appId);
+                if (app) {
+                    document.getElementById('edit-app-id').value = app.id;
+                    document.getElementById('app-name').value = app.nama;
+                    document.getElementById('app-link').value = app.link;
+                    document.getElementById('app-description').value = app.deskripsi || '';
+                    document.getElementById('app-icon').value = app.ikon || '';
+                    document.getElementById('app-form-title').textContent = 'Edit Aplikasi';
+                }
+            } else {
+                document.getElementById('app-form-title').textContent = 'Tambah Aplikasi Baru';
+            }
+        }
+
+        function closeAppFormModal() {
+            document.getElementById('appFormModal').classList.add('hidden');
+            resetAppForm();
+        }
+
+        function resetAppForm() {
+            document.getElementById('edit-app-id').value = '-1';
+            document.getElementById('app-name').value = '';
+            document.getElementById('app-link').value = '';
+            document.getElementById('app-description').value = '';
+            document.getElementById('app-icon').value = '';
+        }
+
+        function saveAppData() {
+            const id = document.getElementById('edit-app-id').value;
+            const nama = document.getElementById('app-name').value.trim();
+            const link = document.getElementById('app-link').value.trim();
+            const deskripsi = document.getElementById('app-description').value.trim();
+            const ikon = document.getElementById('app-icon').value.trim();
+
+            if (!nama || !link) {
+                showToast('⚠️ Nama dan Link aplikasi wajib diisi!', 'error');
+                return;
+            }
+
+            if (id === '-1') {
+                const newId = appList.length > 0 ? Math.max(...appList.map(a => a.id)) + 1 : 1;
+                appList.push({ id: newId, nama, link, deskripsi, ikon: ikon || '📱' });
+                showToast('✅ Aplikasi baru berhasil ditambahkan!', 'success');
+            } else {
+                const index = appList.findIndex(a => a.id == id);
+                if (index !== -1) {
+                    appList[index] = { id: parseInt(id), nama, link, deskripsi, ikon: ikon || '📱' };
+                    showToast('✅ Aplikasi berhasil diperbarui!', 'success');
+                }
+            }
+
+            saveAppList();
+            closeAppFormModal();
+            renderAdminAppList();
+            updateAdminStats();
+        }
+
+        // ========== RENDER DAFTAR APLIKASI (ADMIN) ==========
+        function renderAdminAppList() {
+            const container = document.getElementById('admin-app-list');
+            if (!container) return;
+            container.innerHTML = '';
+
+            if (appList.length === 0) {
+                document.getElementById('admin-app-empty').classList.remove('hidden');
+            } else {
+                document.getElementById('admin-app-empty').classList.add('hidden');
+            }
+
+            appList.forEach(app => {
+                container.innerHTML += `
+                    <div class="bg-white border border-slate-200 p-3 rounded-xl flex justify-between items-center shadow-sm">
+                        <div class="flex items-center gap-3">
+                            <div class="text-2xl">${app.ikon || '📱'}</div>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-700">${app.nama}</h4>
+                                <p class="text-[9px] text-slate-400 truncate max-w-[150px]">${app.link}</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-1">
+                            <button onclick="openAppFormModal(${app.id})" 
+                                    class="w-7 h-7 bg-amber-50 hover:bg-amber-100 text-amber-600 rounded-lg text-xs flex items-center justify-center">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button onclick="openDeleteConfirmModal(${app.id})" 
+                                    class="w-7 h-7 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-xs flex items-center justify-center">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>`;
+            });
+
+            document.getElementById('admin-app-count').textContent = appList.length;
+        }
+
+        function updateAdminStats() {
+            document.getElementById('admin-stat-apps').textContent = appList.length;
+            document.getElementById('admin-stat-last-update').textContent = new Date().toLocaleDateString('id-ID');
+        }
+
+        // ========== MODAL HAPUS ==========
+        function openDeleteConfirmModal(appId) {
+            deleteAppId = appId;
+            const app = appList.find(a => a.id == appId);
+            if (app) {
+                document.getElementById('delete-app-icon').textContent = app.ikon || '📱';
+                document.getElementById('delete-app-name').textContent = app.nama;
+                document.getElementById('delete-app-link').textContent = app.link;
+            }
+            document.getElementById('deleteConfirmModal').classList.remove('hidden');
+        }
+
+        function closeDeleteConfirmModal() {
+            document.getElementById('deleteConfirmModal').classList.add('hidden');
+            deleteAppId = null;
+        }
+
+        function confirmDeleteApp() {
+            if (deleteAppId === null) return;
+            appList = appList.filter(a => a.id != deleteAppId);
+            saveAppList();
+            closeDeleteConfirmModal();
+            renderAdminAppList();
+            updateAdminStats();
+            showToast('🗑 Aplikasi berhasil dihapus!', 'warning');
+        }
+
+        // ========== MODAL EDIT PROFIL ==========
+        function openEditProfileModal() {
+            document.getElementById('profileEditModal').classList.remove('hidden');
+            document.getElementById('edit-profile-name').value = profileData.nama;
+            document.getElementById('edit-profile-role').value = profileData.role;
+            document.getElementById('edit-profile-description').value = profileData.deskripsi;
+            document.getElementById('edit-profile-wa').value = profileData.wa;
+            document.getElementById('edit-profile-telegram').value = profileData.telegram;
+            document.getElementById('edit-profile-email').value = profileData.email;
+            document.getElementById('edit-home-subtitle').value = pageTexts.subtitle;
+            document.getElementById('edit-app-list-title').value = pageTexts.judulApps;
+            document.getElementById('edit-stat-apps').value = pageTexts.statApps;
+            document.getElementById('edit-stat-users').value = pageTexts.statUsers;
+            document.getElementById('edit-stat-updates').value = pageTexts.statUpdates;
+        }
+
+        function closeProfileEditModal() {
+            document.getElementById('profileEditModal').classList.add('hidden');
+        }
+
+        function saveProfileData() {
+            profileData.nama = document.getElementById('edit-profile-name').value.trim();
+            profileData.role = document.getElementById('edit-profile-role').value.trim();
+            profileData.deskripsi = document.getElementById('edit-profile-description').value.trim();
+            profileData.wa = document.getElementById('edit-profile-wa').value.trim();
+            profileData.telegram = document.getElementById('edit-profile-telegram').value.trim();
+            profileData.email = document.getElementById('edit-profile-email').value.trim();
+            
+            pageTexts.subtitle = document.getElementById('edit-home-subtitle').value.trim();
+            pageTexts.judulApps = document.getElementById('edit-app-list-title').value.trim();
+            pageTexts.statApps = document.getElementById('edit-stat-apps').value.trim();
+            pageTexts.statUsers = document.getElementById('edit-stat-users').value.trim();
+            pageTexts.statUpdates = document.getElementById('edit-stat-updates').value.trim();
+
+            saveProfileData();
+            savePageTexts();
+            closeProfileEditModal();
+            loadProfileAndTexts();
+            showToast('✅ Profil dan teks berhasil diperbarui!', 'success');
+        }
+
+        // ========== DEFAULT APPS (JIKA KOSONG) ==========
+        function createDefaultApps() {
+            if (appList.length === 0) {
+                const defaultApps = [
+                    { id: 1, nama: "NotepadPro", link: "notepad.html", deskripsi: "Aplikasi catatan ringan & offline", ikon: "📝" },
+                    { id: 2, nama: "VPN Pro", link: "vpn.html", deskripsi: "Akses internet aman & cepat", ikon: "🔒" },
+                    { id: 3, nama: "Kalkulator Pro", link: "kalkulator.html", deskripsi: "Hitung cepat & akurat", ikon: "🧮" },
+                    { id: 4, nama: "Kalender Pro", link: "kalender.html", deskripsi: "Atur jadwal & kegiatan", ikon: "📅" },
+                    { id: 5, nama: "Konverter Pro", link: "konverter.html", deskripsi: "Konversi satuan & mata uang", ikon: "🔄" },
+                    { id: 6, nama: "Cuaca Pro", link: "cuaca.html", deskripsi: "Cek prakiraan cuaca", ikon: "🌤️" },
+                    { id: 7, nama: "Timer Pro", link: "timer.html", deskripsi: "Pewaktu & pengingat", ikon: "⏱️" },
+                    { id: 8, nama: "QR Pro", link: "qr.html", deskripsi: "Scan & buat QR Code", ikon: "📷" },
+                    { id: 9, nama: "Password Pro", link: "password.html", deskripsi: "Generator password aman", ikon: "🔑" },
+                    { id: 10, nama: "Resep Pro", link: "resep.html", deskripsi: "Koleksi resep masakan", ikon: "🍳" },
+                ];
+                appList = defaultApps;
+                saveAppList();
+            }
+        }
+
+        // ========== INIT ==========
+        (function init() {
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+            createDefaultApps();
+            loadProfileAndTexts();
+            renderAppList();
+            console.log('✅ Dasbor Iklan Aplikasi Pro siap!');
+            console.log('👤 Admin Login: admin / admin123');
+            console.log('📱 ' + appList.length + ' aplikasi siap digunakan');
+        })();
+    </script>
+
+</body>
+</html>
+<!-- END BLOK 11 -->
+
+
+<!-- ===== KETERANGAN APLIKASI → DAFTAR LENGKAP 500 BLOK APLIKASI TOKO ONLINE v9.1 ===== -->
+📋 DAFTAR LENGKAP 500 BLOK APLIKASI TOKO ONLINE v9.1
+
+---
+
+BAGIAN 1: FONDASI APLIKASI (Blok 1-6)
+
+Blok Nama Penjelasan
+1 Fondasi HTML, Meta, PWA, Service Worker, Theme Color DOCTYPE, meta tags, PWA manifest, service worker, favicon, Open Graph, Twitter Card
+2 Library Eksternal (CDN) 16 library: html5-qrcode, xlsx, Chart.js, WebRTC, CryptoJS, Leaflet, Pusher, EmojiMart, PDFMake, JSZip, Lodash, dll
+3 CSS Reset Lengkap + Variabel CSS + Root Styling Reset komplit, 200+ variabel CSS (light/dark mode), utility classes
+4 CSS Komponen (Button, Badge, Card, Modal, Table, Form) Styling semua komponen UI termasuk varian billing
+5 CSS Layout (Dashboard, Sidebar, Content, Grid, Header, BottomNav) Kerangka layout: sidebar, header, content, bottom nav, grid 12 kolom
+6 CSS Responsive + Animasi Aturan responsif semua breakpoint, 25+ animasi (fade, slide, bounce, pulse, dll)
+
+---
+
+BAGIAN 2: FONDASI JAVASCRIPT (Blok 7-40)
+
+Blok Nama Penjelasan
+7 Konfigurasi Global & Constants APP_CONFIG, prefix storage, versi, role list, status list
+8 Helper Functions (formatDate, formatNumber, generateId) Utility functions untuk tanggal, angka, ID generator
+9 Storage Manager (IndexedDB Wrapper) getFromStorage, saveToStorage, existsInStorage, removeFromStorage
+10 System Logger systemLogger.info/warn/error dengan timestamp dan kategori
+11 Auth System - Login login(), validasi credential, set session
+12 Auth System - Register register(), validasi input, generate ID, simpan user baru
+13 Auth System - Logout & Session logout(), checkSession(), session timeout
+14 Auth System - Role Management getRole(), hasPermission(), role hierarchy
+15 Auth System - Password Management hashPassword(), verifyPassword(), resetPassword()
+16 User Manager getUser(), updateUser(), deleteUser(), suspendUser()
+17 User Profile Manager updateProfile(), uploadAvatar(), getProfile()
+18 Chat System - Core sendMessage(), getMessages(), message format
+19 Chat System - Group Chat createGroup(), addMember(), removeMember(), groupMessage()
+20 Chat System - Filter & Moderation filterSARA(), filterPorno(), filterJudi(), autoModeration()
+21 Payment System - Core createPayment(), processPayment(), verifyPayment()
+22 Payment System - Billing generateInvoice(), calculateFee(), applyTax()
+23 Payment System - COD createCOD(), verifyCOD(), transferCOD()
+24 Payment System - Fee Calculator calculateTokoFee(), calculateOjekFee(), calculatePlatformFee()
+25 Payment System - History getPaymentHistory(), getBillingHistory(), exportHistory()
+26 Notification System - In-App sendNotification(), getNotifications(), markAsRead()
+27 Notification System - Push requestPushPermission(), sendPushNotification()
+28 Notification System - Email sendEmailNotification(), emailTemplate()
+29 Notification System - Schedule scheduleNotification(), cronNotification()
+30 Notification System - Template notificationTemplates(), customTemplate()
+31 Filter System - Content filterContent(), blacklistWords(), whitelistWords()
+32 Filter System - SARA/Porno/Judi deepFilter(), regexFilter(), AIFilter()
+33 Filter System - Spam Detection detectSpam(), rateLimiter(), blockSpammer()
+34 Filter System - Image Filter scanImage(), NSFWDetector(), blurImage()
+35 Filter System - Report reportContent(), reviewReport(), actionReport()
+36 Cron & Scheduler scheduleTask(), cronManager(), taskQueue()
+37 Auto Nonaktif System autoNonaktif(), checkDueDate(), suspendAccount()
+38 Upload Manager (Cloudinary/Firebase) uploadMedia(), compressImage(), getMediaURL()
+39 Payment Gateway Integration processGateway(), verifyGateway(), handleCallback()
+40 Error Handler & Debugger globalErrorHandler(), debugLog(), errorReporting()
+
+---
+
+BAGIAN 3: UI RENDERER (Blok 41-120)
+
+Blok Nama Penjelasan
+41 Router - Core navigate(), getCurrentRoute(), routeParams()
+42 Router - Guard routeGuard(), checkAuth(), redirectUnauthorized()
+43 Router - History pushState(), popState(), historyManager()
+44 Router - Deep Link deepLinkHandler(), parseURL(), generateURL()
+45 Renderer - Main renderPage(), updatePageContent(), clearPage()
+46 Renderer - Component renderComponent(), mountComponent(), unmountComponent()
+47 Renderer - List renderList(), virtualScroll(), infiniteScroll()
+48 Renderer - Form renderForm(), formHandler(), formValidator()
+49 Renderer - Table renderTable(), sortTable(), filterTable()
+50 Renderer - Chart renderChart(), updateChart(), chartFactory()
+51 Modal Manager showModal(), closeModal(), modalStack()
+52 Modal - Confirm showConfirm(), showAlert(), showPrompt()
+53 Modal - Detail showModalDetail(), modalWithTabs(), modalWithForm()
+54 Modal - Gallery showGallery(), imageViewer(), lightbox()
+55 Toast System showToast(), toastQueue(), toastTypes()
+56 Toast - Position toastPosition(), toastDuration(), toastAnimation()
+57 Loading System showLoading(), hideLoading(), loadingOverlay()
+58 Loading - Skeleton skeletonLoader(), shimmerEffect(), placeholder()
+59 Sidebar Renderer renderSidebar(), sidebarMenu(), sidebarToggle()
+60 Sidebar - Menu Builder buildMenu(), menuItems(), menuHighlight()
+61 Sidebar - Role Based sidebarByRole(), filterMenu(), menuPermission()
+62 Header Renderer renderHeader(), headerSearch(), headerActions()
+63 Header - Breadcrumb breadcrumbBuilder(), breadcrumbTrail()
+64 Bottom Nav Renderer renderBottomNav(), bottomNavItems(), bottomNavActive()
+65 Footer Renderer renderFooter(), footerLinks(), footerCopyright()
+66 Page - Dashboard renderDashboard(), dashboardWidgets(), dashboardStats()
+67 Page - Profile renderProfile(), profileEditor(), profileView()
+68 Page - Settings renderSettings(), settingsTabs(), saveSettings()
+69 Page - Search renderSearch(), searchGlobal(), searchFilter()
+70 Page - Not Found (404) render404(), notFoundHandler(), redirectHome()
+71 Form Builder buildForm(), formFields(), formLayout()
+72 Form Validator validateForm(), validationRules(), errorDisplay()
+73 Form - Input Mask inputMask(), phoneMask(), currencyMask()
+74 Form - Auto Complete autoComplete(), suggest(), typeahead()
+75 Form - Date Picker datePicker(), rangePicker(), calendarView()
+76 Form - File Upload fileUploader(), dragDrop(), previewFile()
+77 Form - Rich Text Editor richTextEditor(), toolbar(), formatText()
+78 Form - Tag Input tagInput(), tagSuggestions(), tagValidation()
+79 Form - Color Picker colorPicker(), colorPalette(), hexInput()
+80 Table Builder buildTable(), tableColumns(), tablePagination()
+81 Table - Sort sortColumn(), multiSort(), sortIndicator()
+82 Table - Filter tableFilter(), columnFilter(), searchFilter()
+83 Table - Pagination paginate(), pageSize(), pageNavigation()
+84 Table - Export exportCSV(), exportExcel(), exportPDF()
+85 Table - Row Actions rowActions(), inlineEdit(), rowDelete()
+86 Chart Builder buildChart(), chartTypes(), chartConfig()
+87 Chart - Line lineChart(), multiLine(), areaChart()
+88 Chart - Bar barChart(), stackedBar(), horizontalBar()
+89 Chart - Pie/Doughnut pieChart(), doughnutChart(), polarArea()
+90 Chart - Mixed comboChart(), dualAxis(), mixedTypes()
+91 QR Code Generator generateQR(), downloadQR(), scanQR()
+92 Navigasi - Sidebar Items Semua item menu sidebar untuk setiap role
+93 Navigasi - Menu Hello Friends Menu live, feed, gift, follower
+94 Navigasi - Menu Tagihan Menu tagihan, invoice, pembayaran
+95 Navigasi - Menu Ojek Menu order, maps, riwayat
+96 Navigasi - Menu Toko Menu produk, pesanan, laporan
+97 Navigasi - Menu CS Menu tiket, FAQ, bantuan
+98 Navigasi - Menu Staf Menu verifikasi, laporan
+99 Navigasi - Menu Pelanggan Menu belanja, chat, profil
+100 Navigasi - Breadcrumbs Breadcrumb lengkap untuk semua halaman
+101 Loading Screen Splash screen, app loading, progress bar
+102 Empty State Empty state untuk semua halaman (tidak ada data)
+103 Error State Error state, retry button, error message
+104 Success State Success state, celebration animation
+105 Onboarding Tutorial singkat untuk pengguna baru
+106 Walkthrough Step-by-step walkthrough untuk setiap role
+107 Tooltip System Tooltip untuk semua ikon dan tombol
+108 Popover System Popover untuk info tambahan
+109 Dropdown System Dropdown menu, context menu
+110 Accordion System Accordion untuk FAQ dan konten lipat
+111 Tabs System Tabs untuk navigasi konten
+112 Carousel System Carousel untuk banner dan promo
+113 Progress Bar Progress bar untuk upload, loading
+114 Stepper System Stepper untuk form bertahap
+115 Timeline System Timeline untuk riwayat aktivitas
+116 Rating System Bintang rating, review
+117 Reaction System Like, love, emoji reaction
+118 Share System Share button, social share
+119 Print System Print invoice, print laporan
+120 Export System Export PDF, Excel, CSV
+
+---
+
+BAGIAN 4: SUPERADMIN (Blok 121-180)
+
+Blok Nama Penjelasan
+121 Superadmin - Dashboard Dashboard superadmin dengan overview semua
+122 Superadmin - Manajemen User List user, filter, search
+123 Superadmin - Tambah User Form tambah user baru
+124 Superadmin - Edit User Form edit user
+125 Superadmin - Suspend User Suspend/unsuspend user
+126 Superadmin - Hapus User Hapus user dengan konfirmasi
+127 Superadmin - Reset Password User Reset password user lain
+128 Superadmin - Manajemen Role Edit role, permission
+129 Superadmin - Database Management Lihat storage, hapus data, backup/restore
+130 Superadmin - Log Sistem Lihat log aktivitas sistem
+131 Superadmin - Pengaturan Aplikasi Setting global (nama, logo, pajak)
+132 Superadmin - Pengaturan Tema Warna, dark mode, font
+133 Superadmin - Pengaturan Notifikasi Konfigurasi notifikasi
+134 Superadmin - Manajemen CS Tambah/edit/hapus akun CS
+135 Superadmin - Manajemen Staf Tambah/edit/hapus akun staf
+136 Superadmin - Direktori Pengguna Direktori semua pengguna dengan filter
+137 Superadmin - Chat Monitor Lihat semua chat (superadmin bisa monitor)
+138 Superadmin - Chat Grup Manager Kelola grup chat
+139 Superadmin - Chat Massal Kirim chat massal ke semua user
+140 Superadmin - Database Browser Browser data mentah semua tabel
+141 Superadmin - Manajemen Harga Atur harga dasar (ojek, produk)
+142 Superadmin - Manajemen Ojek List ojek, filter, status
+143 Superadmin - Verifikasi Ojek Verifikasi pendaftaran ojek
+144 Superadmin - Manajemen Area Atur area operasional ojek
+145 Superadmin - Manajemen Penawaran Atur penawaran khusus
+146 Superadmin - Promo Manager Buat/edit/hapus promo
+147 Superadmin - Keinginan Manager Lihat semua keinginan pelanggan
+148 Superadmin - Halaman Keinginan Halaman bersama keinginan
+149 Superadmin - Diskon Manager Atur diskon global
+150 Superadmin - Voucher Manager Buat voucher, distribusi
+151 Superadmin - Komisi Manager Atur komisi marketing
+152 Superadmin - Rekening Manager Atur rekening tujuan transfer
+153 Superadmin - Fee Manager Atur fee platform
+154 Superadmin - Pajak Manager Atur pajak (PPN, PPh)
+155 Superadmin - Kategori Global Atur kategori produk global
+156 Superadmin - Satuan Global Atur satuan produk global
+157 Superadmin - Barcode Manager Atur format barcode
+158 Superadmin - Metode Pembayaran Atur metode pembayaran
+159 Superadmin - Bank Manager Atur daftar bank
+160 Superadmin - E-Wallet Manager Atur e-wallet
+161 renderTagihanTokoSuper Lihat semua tagihan toko
+162 renderTagihanOjekSuper Lihat semua tagihan ojek
+163 renderEditFeeSuper Edit persentase fee
+164 renderPendapatanFeeSuper Total pendapatan fee
+165 renderDetailPendapatanFeeSuper Detail pendapatan per transaksi
+166 renderDetailPendapatanPerToko Pendapatan per toko
+167 renderDetailPendapatanPerOjek Pendapatan per ojek
+168 renderLaporanKeuanganSuper Laporan keuangan lengkap
+169 renderApproveTransferSuper Setujui transfer ke toko/ojek
+170 renderHistoryTransferSuper Riwayat transfer
+171 renderAutoNonaktifLogSuper Log akun nonaktif
+172 renderPengaturanBillingSuper Atur billing (tanggal, denda)
+173 generateSemuaTagihanSuper Generate tagihan manual
+174 kirimNotifikasiTagihanMassal Kirim notifikasi tagihan massal
+175 renderLaporanCODSuper Laporan COD
+176 renderLaporanPenjualanSuper Laporan penjualan
+177 renderLaporanOjekSuper Laporan ojek
+178 exportLaporanKeuanganSuper Export laporan (Excel/PDF)
+179 renderDasborKeuanganSuper Dashboard keuangan
+180 renderGrafikPendapatanSuper Grafik pendapatan
+
+---
+
+BAGIAN 5: TOKO (Blok 181-240)
+
+Blok Nama Penjelasan
+181 Toko - Dashboard Dashboard toko, foto produk, ringkasan
+182 Toko - Konfirmasi Pembelian WA Konfirmasi pesanan via WhatsApp
+183 Toko - Manajemen Pesanan List pesanan, update status
+184 Toko - Pesanan Masuk Pesanan baru masuk
+185 Toko - Pemeriksaan Stok Cek stok, stok opname
+186 Toko - Laporan Kerugian Catat kerugian stok
+187 Toko - Kasir Menu kasir (3 menu simpel)
+188 Toko - Scan Barcode Kasir Scan barcode untuk kasir
+189 Toko - Tambah Produk Form tambah produk
+190 Toko - Tambah Produk via Barcode Scan barcode kamera
+191 Toko - Kategori Produk Kelola kategori
+192 Toko - Satuan Produk Kelola satuan
+193 Toko - Edit Produk Form edit produk
+194 Toko - Anggaran Modal Catat modal cash
+195 Toko - Anggaran Belanja Catat belanja, export Excel
+196 Toko - Laporan Harian Laporan harian
+197 Toko - Laporan Mingguan Laporan mingguan
+198 Toko - Laporan Bulanan Laporan bulanan
+199 Toko - Laporan Tahunan Laporan tahunan
+200 Toko - Grafik Penjualan Grafik penjualan
+201 Toko - Grafik Keuntungan Grafik keuntungan
+202 Toko - Grafik Stok Grafik stok
+203 Toko - Profil Toko Edit profil toko
+204 Toko - Jam Operasional Atur jam buka
+205 Toko - Pemeriksaan Stok Rutin Jadwal stok opname
+206 Toko - Catatan Kerugian Riwayat kerugian
+207 Toko - Laporan Otomatis Kirim laporan otomatis
+208 Toko - Export Laporan Excel Export laporan ke Excel
+209 Toko - Scan Barcode Produk Scan untuk cek produk
+210 Toko - Peta Toko Tampilkan lokasi toko di peta
+211 Toko - Edit Profil Lengkap Edit semua info toko
+212 Toko - Kategori & Satuan Manager Kelola kategori dan satuan
+213 Toko - Modal Cash Manager Kelola modal cash
+214 Toko - Belanja Manager Kelola belanja toko
+215 Toko - Export Data Toko Export semua data toko
+216 Toko - Dasbor Grafik Grafik di dashboard
+217 Toko - Analisis Penjualan Analisis tren penjualan
+218 Toko - Notifikasi Pesanan Notifikasi pesanan baru
+219 Toko - Video Call dengan Pembeli Video call untuk konfirmasi
+220 Toko - Status Online/Offline Aktifkan mode online/offline
+221 renderTagihanToko Lihat tagihan toko
+222 renderDetailTagihanToko Detail tagihan
+223 bayarTagihanToko Bayar tagihan
+224 konfirmasiTransferTagihanToko Upload bukti transfer
+225 renderHistoryTagihanToko Riwayat tagihan
+226 renderStatusTagihanToko Status tagihan
+227 renderNotifikasiTagihanToko Notifikasi tagihan
+228 renderLaporanFeeToko Laporan fee yang dibayar
+229 renderProdukTerjualDetail Detail produk terjual
+230 exportTagihanToko Export tagihan
+231 renderPenjualanCOD Laporan penjualan COD
+232 renderTransferDariSuperadmin Lihat transfer masuk
+233 konfirmasiTerimaTransfer Konfirmasi terima transfer
+234 renderRekapPenjualanBulanan Rekap penjualan
+235 renderLaporanLengkapToko Laporan lengkap
+236 renderDasborTagihanToko Dasbor tagihan
+237 renderPengingatTagihan Pengingat tagihan
+238 autoHitungFeeBulanan Kalkulasi fee otomatis
+239 renderCekStatusAkun Cek status akun
+240 pengajuanReaktivasiToko Ajukan reaktivasi
+
+---
+
+BAGIAN 6: PELANGGAN (Blok 241-280)
+
+Blok Nama Penjelasan
+241 Pelanggan - Dashboard Dashboard pelanggan
+242 Pelanggan - Direktori Produk Lihat semua produk
+243 Pelanggan - Katalog Katalog produk dengan filter
+244 Pelanggan - Pencarian Cari produk
+245 Pelanggan - Detail Produk Detail produk, foto, harga
+246 Pelanggan - Keranjang Keranjang belanja
+247 Pelanggan - Checkout Proses checkout
+248 Pelanggan - Pilih Ojek Pilih ojek untuk antar
+249 Pelanggan - Pesan Ojek Form pesan ojek
+250 Pelanggan - Tracking Ojek Lacak ojek di peta
+251 Pelanggan - Riwayat Pesanan Riwayat pesanan
+252 Pelanggan - Detail Pesanan Detail pesanan
+253 Pelanggan - Batalkan Pesanan Batalkan pesanan
+254 Pelanggan - Beri Rating Rating toko dan ojek
+255 Pelanggan - Chat dengan Toko Chat langsung dengan toko
+256 Pelanggan - Chat dengan Ojek Chat langsung dengan ojek
+257 Pelanggan - Chat dengan CS Chat dengan customer service
+258 Pelanggan - Simpan Kontak Simpan kontak ID
+259 Pelanggan - Notifikasi Notifikasi pelanggan
+260 Pelanggan - Tutorial Tutorial cara pesan
+261 Pelanggan - Profil Edit profil
+262 Pelanggan - Edit Foto Profil Upload foto profil
+263 Pelanggan - Alamat Kelola alamat
+264 Pelanggan - Metode Pembayaran Atur metode pembayaran
+265 Pelanggan - Wishlist Daftar keinginan
+266 Pelanggan - Voucher Saya Voucher yang dimiliki
+267 Pelanggan - Poin Reward Poin dan reward
+268 Pelanggan - Referral Kode referral
+269 Pelanggan - Pengaturan Pengaturan akun
+270 Pelanggan - Hapus Akun Hapus akun
+271 Pelanggan - Mode Online/Offline Aktifkan mode online
+272 Pelanggan - Live Streaming Mulai live streaming
+273 Pelanggan - Tonton Live Tonton live streamer
+274 Pelanggan - Beli Gift Beli gift virtual
+275 Pelanggan - Kirim Gift Kirim gift ke streamer
+276 Pelanggan - Video Call Video call dengan kontak
+277 Pelanggan - Panggilan Telpon Voice call dengan kontak
+278 Pelanggan - Kontak Tersimpan Daftar kontak tersimpan
+279 Pelanggan - Block User Blokir pengguna
+280 Pelanggan - Lapor Pengguna Laporkan pengguna
+
+---
+
+BAGIAN 7: OJEK (Blok 281-320)
+
+Blok Nama Penjelasan
+281 Ojek - Dashboard Dashboard ojek
+282 Ojek - Profil Ojek Edit profil ojek
+283 Ojek - Status Online Aktifkan mode online
+284 Ojek - Lihat Order Terdekat Order masuk terdekat
+285 Ojek - Detail Order Detail order pelanggan
+286 Ojek - Tawarkan Diri Tawarkan diri ke pelanggan
+287 Ojek - Terima Order Terima order
+288 Ojek - Riwayat Harian Riwayat order harian
+289 Ojek - Riwayat Mingguan Riwayat mingguan
+290 Ojek - Riwayat Bulanan Riwayat bulanan, export
+291 Ojek - Grafik Pendapatan Grafik pendapatan
+292 Ojek - Peta Aktif Peta dengan posisi ojek
+293 Ojek - Navigasi Navigasi ke tujuan
+294 Ojek - Ukur Jarak Ukur jarak antar titik
+295 Ojek - Estimasi Ongkos Hitung estimasi ongkos
+296 Ojek - Chat dengan Pelanggan Chat dengan pelanggan
+297 Ojek - Chat dengan Toko Chat dengan toko
+298 Ojek - COD Management Kelola COD
+299 Ojek - Verifikasi COD Verifikasi pembayaran COD
+300 Ojek - Transfer ke Superadmin Transfer hasil COD
+301 Ojek - Laporan COD Laporan COD harian
+302 Ojek - Tagihan Ojek Lihat tagihan
+303 Ojek - Bayar Tagihan Bayar tagihan
+304 Ojek - Riwayat COD Riwayat COD
+305 Ojek - Riwayat Jemput Riwayat jemput barang
+306 Ojek - Riwayat Antar Riwayat antar
+307 Ojek - Detail COD Detail transaksi COD
+308 Ojek - Upload Bukti Transfer Upload bukti transfer
+309 Ojek - Notifikasi Notifikasi ojek
+310 Ojek - Pengaturan Pengaturan ojek
+311 Ojek - Rating & Review Lihat rating
+312 Ojek - Performa Statistik performa
+313 Ojek - Area Operasi Atur area operasi
+314 Ojek - Jadwal Atur jadwal operasi
+315 Ojek - Kendaraan Info kendaraan
+316 Ojek - Dokumen Upload dokumen
+317 Ojek - Bantuan Bantuan ojek
+318 Ojek - Tutorial Tutorial penggunaan
+319 Ojek - Lapor Masalah Lapor masalah
+320 Ojek - Reaktivasi Akun Ajukan reaktivasi
+
+---
+
+BAGIAN 8: MARKETING (Blok 321-340)
+
+Blok Nama Penjelasan
+321 Marketing - Dashboard Dashboard marketing
+322 Marketing - Kode Referral Generate kode referral
+323 Marketing - Komisi Lihat komisi
+324 Marketing - Riwayat Komisi Riwayat komisi
+325 Marketing - Target Target marketing
+326 Marketing - Performa Performa marketing
+327 Marketing - Leaderboard Leaderboard marketing
+328 Marketing - Materi Promo Materi promosi
+329 Marketing - Tools Tools marketing
+330 Marketing - Laporan Laporan marketing
+331 Marketing Free - Dashboard Dashboard marketing free
+332 Marketing Free - Share Share link
+333 Marketing Free - Komisi Komisi free
+334 Marketing Free - Upgrade Upgrade ke marketing
+335 Marketing - Sosial Media Share ke sosial media
+336 Marketing - Banner Banner promosi
+337 Marketing - Landing Page Landing page marketing
+338 Marketing - Tracking Tracking link
+339 Marketing - Withdraw Tarik komisi
+340 Marketing - Pengaturan Pengaturan marketing
+
+---
+
+BAGIAN 9: STAF (Blok 341-354)
+
+Blok Nama Penjelasan
+341 renderVerifikasiPembayaranStaf Verifikasi pembayaran
+342 renderListPembayaranMasuk List pembayaran masuk
+343 konfirmasiPembayaranStaf Konfirmasi pembayaran
+344 tolakPembayaranStaf Tolak pembayaran
+345 renderLaporanTransferKeSuperadmin Laporan transfer
+346 renderHistoryVerifikasiStaf Riwayat verifikasi
+347 renderCODMasukStaf COD masuk
+348 verifikasiCODStaf Verifikasi COD
+349 renderTransferCODKeSuperadmin Transfer COD
+350 renderDasborStaf Dashboard staf
+351 renderTindakLanjutStaf Tindak lanjut ojek belum transfer
+352 kirimPeringatanStaf Kirim peringatan
+353 renderLaporanStafKeSuperadmin Laporan ke superadmin
+354 exportLaporanStaf Export laporan staf
+
+---
+
+BAGIAN 10: CUSTOMER SERVICE (Blok 355-370)
+
+Blok Nama Penjelasan
+355 CS - Dashboard Dashboard CS
+356 CS - Tiket Masuk Tiket bantuan masuk
+357 CS - Balas Tiket Balas tiket
+358 CS - Tutup Tiket Tutup tiket
+359 CS - History Tiket Riwayat tiket
+360 CS - Live Chat Live chat dengan pelanggan
+361 renderFAQCS FAQ tagihan
+362 renderPanduanPembayaranCS Panduan pembayaran
+363 renderStatusTagihanCS Status tagihan
+364 renderBantuanTagihanCS Bantuan tagihan
+365 renderEskalasiMasalah Eskalasi masalah
+366 renderTiketBantuan Tiket bantuan
+367 renderHistoryTiket Riwayat tiket
+368 renderSolusiOtomatis Solusi otomatis
+369 renderLiveChatCS Live chat CS
+370 renderRatingCS Rating CS
+
+---
+
+BAGIAN 11: HELLO FRIENDS (Blok 371-430)
+
+Blok Nama Penjelasan
+371 Hello Friends - Feed Feed utama
+372 Hello Friends - Post Buat postingan
+373 Hello Friends - Like Like postingan
+374 Hello Friends - Komentar Komentar postingan
+375 Hello Friends - Share Share postingan
+376 Hello Friends - Follow Follow user
+377 Hello Friends - Unfollow Unfollow user
+378 Hello Friends - Follower List Daftar follower
+379 Hello Friends - Following List Daftar following
+380 Hello Friends - Profil Profil Hello Friends
+381 Hello Friends - Edit Profil Edit profil HF
+382 Hello Friends - Upload Foto Upload foto
+383 Hello Friends - Gallery Gallery foto
+384 Hello Friends - Story Story 24 jam
+385 Hello Friends - Story Viewer Lihat story
+386 Hello Friends - Trending Konten trending
+387 Hello Friends - Explore Explore konten
+388 Hello Friends - Search Cari user
+389 Hello Friends - Notifikasi Notifikasi HF
+390 Hello Friends - Pengaturan Pengaturan HF
+391 Hello Friends - Live Streaming Mulai live
+392 Hello Friends - Tonton Live Tonton live
+393 Hello Friends - Live Chat Chat saat live
+394 Hello Friends - Gift Virtual Gift virtual
+395 Hello Friends - Beli Gift Beli gift
+396 Hello Friends - Kirim Gift Kirim gift
+397 Hello Friends - Gift Terpopuler Gift terpopuler
+398 Hello Friends - Leaderboard Gift Leaderboard gift
+399 Hello Friends - Top Streamer Streamer teratas
+400 Hello Friends - Monetisasi Monetisasi konten
+401 Hello Friends - Withdraw Gift Tarik gift
+402 Hello Friends - Jual Kembali Gift Jual kembali gift
+403 Hello Friends - Harga Gift Daftar harga gift
+404 Hello Friends - Edit Harga Gift Edit harga (superadmin)
+405 Hello Friends - Live Schedule Jadwal live
+406 Hello Friends - Live Reminder Pengingat live
+407 Hello Friends - Live Record Rekaman live
+408 Hello Friends - Video Call Video call
+409 Hello Friends - Voice Call Panggilan suara
+410 Hello Friends - Call History Riwayat panggilan
+411 Hello Friends - Upload Media Upload ke Cloudinary
+412 Hello Friends - WebRTC Connection Koneksi WebRTC
+413 Hello Friends - Enkripsi Chat Enkripsi end-to-end
+414 Hello Friends - Grup Chat Grup chat HF
+415 Hello Friends - Stiker Stiker chat
+416 Hello Friends - Emoji Emoji picker
+417 Hello Friends - Gif Gif chat
+418 Hello Friends - Voice Note Voice note
+419 Hello Friends - Share Location Share lokasi
+420 Hello Friends - Media Preview Preview media
+421 Hello Friends - Logo Logo HF
+422 Hello Friends - Tema Tema HF
+423 Hello Friends - Badge Badge user
+424 Hello Friends - Verifikasi Verifikasi akun
+425 Hello Friends - Suspend Suspend akun HF
+426 Hello Friends - Report Lapor konten
+427 Hello Friends - Block Blokir user
+428 Hello Friends - Privacy Pengaturan privasi
+429 Hello Friends - Data Data & arsip
+430 Hello Friends - Hapus Akun Hapus akun HF
+
+---
+
+BAGIAN 12: BILLING SYSTEM (Blok 431-470)
+
+Blok Nama Penjelasan
+431 SISTEM CRON TAGIHAN Penjadwalan generate tagihan otomatis
+432 SISTEM NOTIFIKASI TAGIHAN Notifikasi tagihan ke user
+433 SISTEM AUTO NONAKTIF Nonaktif akun jika belum bayar
+434 SISTEM REAKTIVASI Aktifkan kembali akun
+435 SISTEM PENGINGAT JATUH TEMPO Pengingat jatuh tempo
+436 SISTEM DENDA Perhitungan denda
+437 SISTEM DISKON TAGIHAN Diskon tagihan
+438 SISTEM AUDIT TRAIL Jejak audit
+439 SISTEM REPORT GENERATOR Generate laporan otomatis
+440 SISTEM BACKUP TAGIHAN Backup data tagihan
+441 Pendapatan Detail - Per Transaksi Detail per transaksi
+442 Pendapatan Detail - Per Hari Detail per hari
+443 Pendapatan Detail - Per Minggu Detail per minggu
+444 Pendapatan Detail - Per Bulan Detail per bulan
+445 Pendapatan Detail - Grafik Grafik pendapatan
+446 Pendapatan Detail - Filter Filter pendapatan
+447 Pendapatan Detail - Search Cari pendapatan
+448 Pendapatan Detail - Export Export pendapatan
+449 Pendapatan Detail - Print Print pendapatan
+450 Pendapatan Detail - Summary Ringkasan pendapatan
+451 Target Manager Atur target
+452 Mutasi Rekening - Masuk Mutasi masuk
+453 Mutasi Rekening - Keluar Mutasi keluar
+454 Mutasi Rekening - Saldo Saldo rekening
+455 Mutasi Rekening - Filter Filter mutasi
+456 Mutasi Rekening - Export Export mutasi
+457 Mutasi Rekening - Grafik Grafik mutasi
+458 Mutasi Rekening - Rekonsiliasi Rekonsiliasi
+459 Mutasi Rekening - Bank Statement Statement bank
+460 Mutasi Rekening - Audit Audit mutasi
+461 renderLaporanPajak Laporan pajak
+462 renderInvoiceTagihan Invoice tagihan
+463 renderKwitansiPembayaran Kwitansi pembayaran
+464 renderSuratPeringatan Surat peringatan
+465 renderSertifikatLunas Sertifikat lunas
+466 renderPengaturanBillingGlobal Pengaturan billing
+467 renderTemplateNotifikasi Template notifikasi
+468 renderLogSistem Log sistem
+469 renderMonitoringSistem Monitoring sistem
+470 renderAlertSistem Alert sistem
+
+---
+
+BAGIAN 13: BACKUP, RESTORE & INTEGRASI (Blok 471-484)
+
+Blok Nama Penjelasan
+471 Backup System Backup semua data
+472 Restore System Restore dari backup
+473 Import Data Import data Excel/CSV
+474 Tutorial System Tutorial semua role
+475 Integrasi WhatsApp Gateway Kirim WA
+476 Integrasi Email Gateway Kirim email
+477 Integrasi SMS Gateway Kirim SMS
+478 Integrasi Firebase Firebase push
+479 Integrasi Cloudinary Cloudinary upload
+480 Integrasi Pusher Pusher realtime
+481 Data Migration Migrasi data
+482 Version Manager Versi update
+483 Changelog Changelog
+484 Release Notes Release notes
+
+---
+
+BAGIAN 14: TESTING, DEBUGGING & DEPLOY (Blok 485-500)
+
+Blok Nama Penjelasan
+485 Unit Test - Auth Test auth
+486 Unit Test - Database Test database
+487 Unit Test - Billing Test billing
+488 Unit Test - Chat Test chat
+489 Integration Test Test integrasi
+490 E2E Test Test end-to-end
+491 Performance Test Test performa
+492 Security Audit Audit keamanan
+493 Bug Fixing - Critical Fix bug kritis
+494 Bug Fixing - Minor Fix bug minor
+495 Code Optimization Optimasi kode
+496 Build Production Build produksi
+497 Deploy ke Server Deploy server
+498 Deploy ke Netlify/Vercel Deploy platform
+499 Final Backup Backup final
+500 GO LIVE! 🚀 Rilis resmi v9.1
+
+---
+
+📊 REKAP TOTAL
+
+Bagian Blok Jumlah
+Fondasi Aplikasi 1-6 6
+Fondasi JavaScript 7-40 34
+UI Renderer 41-120 80
+Superadmin 121-180 60
+Toko 181-240 60
+Pelanggan 241-280 40
+Ojek 281-320 40
+Marketing 321-340 20
+Staf 341-354 14
+CS 355-370 16
+Hello Friends 371-430 60
+Billing System 431-470 40
+Backup & Integrasi 471-484 14
+Testing & Deploy 485-500 16
+TOTAL 1-500 500
+
+--
+
+
+<!-- ===== KETERANGAN APLIKASI → Bagian - Bagian ===== -->
+No Fitur yang Diminta Sudah di Blok Status
+1 Tutorial semua role 474 ✅
+2 Cara pesan produk & ojek 241-260, 474 ✅
+3 Chat berfungsi, simpan ID, grup chat 19-20, 137-139, 411 ✅
+4 Menu hasil chat massal superadmin 139 ✅
+5 Hello Friends menu 371-430 ✅
+6 Jasa Ojek - maps, ukur jarak, urut terdekat 141, 210, 241-260 ✅
+7 Pelanggan chat langsung ojek 208, 241-260 ✅
+8 Simpan kontak ID 278, 411 ✅
+9 Hubungi Admin → Hubungi CS 99, 355-370 ✅
+10 Superadmin tambah akun CS 134 ✅
+11 Menu Keinginan halaman bersama 147-148, 206-207 ✅
+12 Pelanggan aktifkan offline/online 220, 241-260 ✅
+13 Tombol kembali direktori tidak logout 84, 109 ✅
+14 Ojek online tetap meski keluar aplikasi 228 ✅
+15 Ojek lihat order terdekat + profil + ongkos 221-224 ✅
+16 Ojek tawarkan diri + chat 223, 226 ✅
+17 Ojek riwayat harian 224 ✅
+18 Toko tambah produk via barcode kamera 189-190, 209-210 ✅
+19 Toko kategori & satuan produk 191-192, 211-212 ✅
+20 Anggaran modal cash & belanja 194-195, 213-214 ✅
+21 Dasbor toko tampilkan foto produk 181 ✅
+22 Kasir hanya 3 menu 183-187, 204-206 ✅
+23 Pemeriksaan stok + kerugian 185-186, 205-206 ✅
+24 Laporan harian/mingguan/bulanan + Excel 196-198, 207-208, 216 ✅
+25 Laporan otomatis 207-208 ✅
+26 Konfirmasi pembelian via WA 182-183, 219 ✅
+27 Filter SARA/judi/porno di chat & keinginan 32 ✅
+28 Hello Friends live, gift, follower 391-410 ✅
+29 Gift harga diedit superadmin 163, 274, 283 ✅
+30 Streamer jual kembali gift 274 ✅
+31 Semua akun bisa live 272, 282 ✅
+32 Video call & telpon (WebRTC) 276-277, 411-420 ✅
+33 Upload media ke Cloudinary/Firebase 38, 281, 411-420 ✅
+34 Logo Hello Friends diatur superadmin 283, 421-430 ✅
+35 Suspend akun Hello Friends terpisah 282 ✅
+36 Edit profil lengkap pelanggan 211 ✅
+37 Tagihan pemakaian jasa app tukang ojek 22-23, 281-310 ✅
+38 Tagihan pemakaian jasa app akun toko 22-23, 221-240 ✅
+39 Tagihan fee dari penjualan produk 22-23, 33, 221-240 ✅
+40 Laporan tagihan di superadmin 161-180 ✅
+41 Kirim tagihan otomatis tgl 5 36-37, 431-432 ✅
+42 Auto nonaktif jika tgl 10 belum bayar 37, 433-434 ✅
+43 Form tagihan ojek tiap bulan otomatis 36, 281-310 ✅
+44 Riwayat jasa antar COD & jemput 288, 304-308 ✅
+45 Form tagihan toko (total produk × fee% + biaya pemakaian) 33, 221-240 ✅
+46 Superadmin edit harga tagihan 163, 172 ✅
+47 Laporan keuangan superadmin lengkap 168-180, 441-470 ✅
+48 Menu pendapatan fee detail satu per satu 164-167, 441-450 ✅
+49 COD semua masuk rekening superadmin 39, 461-470 ✅
+50 Staf kirim laporan transfer ke superadmin 341-354 ✅
+51 Superadmin teruskan transfer ke toko & ojek 39, 169-170 ✅
+52 Menu tagihan sudah dilanjutkan 169-170 ✅
+53 COD bayar cash, ojek transfer ke superadmin 304-308, 461-470 ✅
+54 Staf tindak lanjut ojek belum transfer 341-354 ✅
