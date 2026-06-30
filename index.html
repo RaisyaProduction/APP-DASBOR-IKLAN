@@ -1579,7 +1579,7 @@
 <!-- ===== HALAMAN DASBOR IKLAN APLIKASI → BLOK 12 - DASBOR IKLAN APLIKASI PRO - HALAMAN CHAT PENGUNJUNG ===== -->
 <!-- ============================================================
      BLOK 12 - DASBOR IKLAN APLIKASI PRO - HALAMAN CHAT PENGUNJUNG
-     (Bubble Chat, Input Pesan, Kirim ke Admin)
+     (Form Nama & Nomor HP/WhatsApp + Bubble Chat)
      ============================================================ -->
             <div id="page-chat-visitor" class="hidden space-y-4 page-transition">
                 
@@ -1601,27 +1601,78 @@
                     </div>
                 </div>
 
-                <!-- AREA PERCAKAPAN -->
-                <div id="visitor-chat-messages" class="space-y-3 max-h-[350px] overflow-y-auto pr-1 bg-slate-50 rounded-2xl p-4 border border-slate-100" style="min-height: 300px;">
-                    <div class="text-center text-slate-400 py-6 text-xs italic">
-                        <div class="text-3xl mb-2">💬</div>
-                        Kirim pesan untuk memulai percakapan dengan admin
+                <!-- FORM IDENTITAS PENGUNJUNG -->
+                <div id="visitor-identity-form" class="bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-200 rounded-2xl p-4 space-y-3">
+                    <div class="text-center">
+                        <div class="text-2xl mb-1">👤</div>
+                        <h3 class="text-xs font-bold text-indigo-700">Identitas Anda</h3>
+                        <p class="text-[10px] text-slate-500 mt-0.5">Mohon isi data berikut sebelum memulai chat</p>
                     </div>
+                    
+                    <!-- NAMA -->
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                            <i class="fa-solid fa-user text-indigo-400 mr-1"></i> Nama Lengkap *
+                        </label>
+                        <input type="text" id="visitor-name-input" 
+                               class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                               placeholder="Masukkan nama lengkap Anda">
+                    </div>
+                    
+                    <!-- NOMOR HP / WHATSAPP -->
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                            <i class="fa-brands fa-whatsapp text-emerald-400 mr-1"></i> Nomor HP / WhatsApp *
+                        </label>
+                        <input type="text" id="visitor-phone-input" 
+                               class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                               placeholder="Contoh: 0812xxxxxx">
+                        <p class="text-[9px] text-slate-400 mt-1">
+                            <i class="fa-solid fa-circle-info mr-1"></i> 
+                            Nomor Anda akan ditampilkan ke admin untuk memudahkan komunikasi
+                        </p>
+                    </div>
+                    
+                    <!-- TOMBOL MULAI CHAT -->
+                    <button onclick="startVisitorChat()" 
+                            class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold py-2.5 rounded-xl text-xs shadow-md shadow-indigo-500/20 active:scale-[0.97] transition-all cursor-pointer flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-comments"></i> Mulai Chat dengan Admin
+                    </button>
                 </div>
 
-                <!-- INPUT PESAN -->
-                <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-2xl p-2">
-                    <input type="text" id="visitor-name-input" 
-                           class="w-1/4 bg-transparent border-none outline-none text-xs px-2 py-2 border-r border-slate-200"
-                           placeholder="Nama Anda">
-                    <input type="text" id="visitor-chat-input" 
-                           class="flex-1 bg-transparent border-none outline-none text-xs px-2 py-2"
-                           placeholder="Ketik pesan..."
-                           onkeydown="if(event.key==='Enter')sendVisitorMessage()">
-                    <button onclick="sendVisitorMessage()" 
-                            class="w-9 h-9 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl flex items-center justify-center cursor-pointer transition-all active:scale-90 shadow-md">
-                        <i class="fa-solid fa-paper-plane text-xs"></i>
-                    </button>
+                <!-- AREA PERCAKAPAN (AWALNYA TERSEMBUNYI) -->
+                <div id="visitor-chat-area" class="hidden space-y-3">
+                    <!-- INFO KONTAK -->
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center justify-between">
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-700" id="visitor-display-name">-</p>
+                            <p class="text-[9px] text-slate-400" id="visitor-display-phone">-</p>
+                        </div>
+                        <button onclick="resetVisitorIdentity()" 
+                                class="text-[10px] font-bold text-indigo-500 hover:text-indigo-700 cursor-pointer transition-colors">
+                            <i class="fa-solid fa-pen mr-1"></i> Ubah
+                        </button>
+                    </div>
+                    
+                    <!-- AREA PERCAKAPAN -->
+                    <div id="visitor-chat-messages" class="space-y-3 max-h-[300px] overflow-y-auto pr-1 bg-slate-50 rounded-2xl p-4 border border-slate-100" style="min-height: 250px;">
+                        <div class="text-center text-slate-400 py-6 text-xs italic">
+                            <div class="text-3xl mb-2">💬</div>
+                            Kirim pesan untuk memulai percakapan dengan admin
+                        </div>
+                    </div>
+
+                    <!-- INPUT PESAN -->
+                    <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-2xl p-2">
+                        <input type="text" id="visitor-chat-input" 
+                               class="flex-1 bg-transparent border-none outline-none text-xs px-2 py-2"
+                               placeholder="Ketik pesan..."
+                               onkeydown="if(event.key==='Enter')sendVisitorMessage()">
+                        <button onclick="sendVisitorMessage()" 
+                                class="w-9 h-9 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl flex items-center justify-center cursor-pointer transition-all active:scale-90 shadow-md">
+                            <i class="fa-solid fa-paper-plane text-xs"></i>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- INFO -->
@@ -1717,6 +1768,7 @@
 <!-- ============================================================
      BLOK 14 - DASBOR IKLAN APLIKASI PRO - JAVASCRIPT CHAT
      (Database Chat, Render Chat Pengunjung & Admin, Kirim Pesan)
+     REVISI: Form identitas pengunjung (Nama + Nomor HP/WhatsApp)
      ============================================================ -->
     <script>
         // ========== DATABASE CHAT ==========
@@ -1727,67 +1779,147 @@
         }
 
         // ========== GENERATE ID PENGUNJUNG ==========
-        function generateVisitorId(name) {
-            return 'visitor_' + name.toLowerCase().replace(/[^a-z0-9]/g, '_') + '_' + Date.now().toString(36);
+        function generateVisitorId(name, phone) {
+            const cleanName = name.toLowerCase().replace(/[^a-z0-9]/g, '_');
+            const cleanPhone = phone.replace(/[^0-9]/g, '');
+            return 'visitor_' + cleanName + '_' + cleanPhone;
         }
 
-        function getOrCreateVisitorId(name) {
+        function getOrCreateVisitorId(name, phone) {
+            const cleanPhone = phone.replace(/[^0-9]/g, '');
+            // Cari apakah sudah ada visitor dengan nama dan nomor HP yang sama
             const existingKey = Object.keys(chatData).find(key => {
                 const visitor = chatData[key];
-                return visitor.name === name;
+                const existingPhone = visitor.phone ? visitor.phone.replace(/[^0-9]/g, '') : '';
+                return visitor.name === name && existingPhone === cleanPhone;
             });
             if (existingKey) return existingKey;
-            return generateVisitorId(name);
+            return generateVisitorId(name, phone);
         }
+
+        // ========== VARIABEL CHAT PENGUNJUNG ==========
+        let currentVisitorId = null;
+        let currentVisitorName = null;
+        let currentVisitorPhone = null;
 
         // ========== BUKA CHAT PENGUNJUNG ==========
         function openVisitorChat() {
             switchPage('page-chat-visitor');
+            
+            // Reset form identitas
+            document.getElementById('visitor-identity-form').classList.remove('hidden');
+            document.getElementById('visitor-chat-area').classList.add('hidden');
+            document.getElementById('visitor-name-input').value = '';
+            document.getElementById('visitor-phone-input').value = '';
             document.getElementById('visitor-chat-messages').innerHTML = `
                 <div class="text-center text-slate-400 py-6 text-xs italic">
                     <div class="text-3xl mb-2">💬</div>
                     Kirim pesan untuk memulai percakapan dengan admin
                 </div>`;
+            
+            // Reset variabel
+            currentVisitorId = null;
+            currentVisitorName = null;
+            currentVisitorPhone = null;
         }
 
-        function sendVisitorMessage() {
+        // ========== MULAI CHAT (SETELAH ISI IDENTITAS) ==========
+        function startVisitorChat() {
             const nameInput = document.getElementById('visitor-name-input');
-            const messageInput = document.getElementById('visitor-chat-input');
+            const phoneInput = document.getElementById('visitor-phone-input');
             
             const name = nameInput.value.trim();
-            const message = messageInput.value.trim();
+            const phone = phoneInput.value.trim();
             
             if (!name) {
-                showToast('⚠️ Masukkan nama Anda terlebih dahulu!', 'warning');
+                showToast('⚠️ Masukkan nama lengkap Anda!', 'warning');
                 nameInput.focus();
                 return;
             }
             
-            if (!message) return;
+            if (!phone) {
+                showToast('⚠️ Masukkan nomor HP/WhatsApp Anda!', 'warning');
+                phoneInput.focus();
+                return;
+            }
             
-            const visitorId = getOrCreateVisitorId(name);
+            // Simpan identitas pengunjung
+            currentVisitorName = name;
+            currentVisitorPhone = phone;
+            currentVisitorId = getOrCreateVisitorId(name, phone);
             
-            if (!chatData[visitorId]) {
-                chatData[visitorId] = {
+            // Update database visitor
+            if (!chatData[currentVisitorId]) {
+                chatData[currentVisitorId] = {
                     name: name,
+                    phone: phone,
                     messages: [],
                     lastUpdate: new Date().toISOString()
                 };
+            } else {
+                // Update nama dan nomor jika berubah
+                chatData[currentVisitorId].name = name;
+                chatData[currentVisitorId].phone = phone;
             }
             
-            chatData[visitorId].messages.push({
+            saveChatData();
+            
+            // Sembunyikan form identitas, tampilkan area chat
+            document.getElementById('visitor-identity-form').classList.add('hidden');
+            document.getElementById('visitor-chat-area').classList.remove('hidden');
+            
+            // Tampilkan info pengunjung
+            document.getElementById('visitor-display-name').textContent = '👤 ' + name;
+            document.getElementById('visitor-display-phone').textContent = '📱 ' + phone;
+            
+            // Render pesan yang sudah ada
+            renderVisitorMessages(currentVisitorId);
+            
+            // Fokus ke input pesan
+            document.getElementById('visitor-chat-input').focus();
+            
+            showToast('✅ Anda terhubung dengan admin!', 'success');
+        }
+
+        // ========== RESET IDENTITAS PENGUNJUNG ==========
+        function resetVisitorIdentity() {
+            // Kembali ke form identitas
+            document.getElementById('visitor-identity-form').classList.remove('hidden');
+            document.getElementById('visitor-chat-area').classList.add('hidden');
+            document.getElementById('visitor-name-input').value = currentVisitorName || '';
+            document.getElementById('visitor-phone-input').value = currentVisitorPhone || '';
+            
+            // Reset variabel
+            currentVisitorId = null;
+            currentVisitorName = null;
+            currentVisitorPhone = null;
+        }
+
+        // ========== KIRIM PESAN PENGUNJUNG ==========
+        function sendVisitorMessage() {
+            if (!currentVisitorId) {
+                showToast('⚠️ Silakan isi identitas terlebih dahulu!', 'warning');
+                return;
+            }
+            
+            const messageInput = document.getElementById('visitor-chat-input');
+            const message = messageInput.value.trim();
+            
+            if (!message) return;
+            
+            chatData[currentVisitorId].messages.push({
                 sender: 'visitor',
                 text: message,
                 timestamp: new Date().toISOString()
             });
-            chatData[visitorId].lastUpdate = new Date().toISOString();
+            chatData[currentVisitorId].lastUpdate = new Date().toISOString();
             
             saveChatData();
             messageInput.value = '';
-            nameInput.readOnly = true;
-            renderVisitorMessages(visitorId);
+            renderVisitorMessages(currentVisitorId);
         }
 
+        // ========== RENDER PESAN PENGUNJUNG ==========
         function renderVisitorMessages(visitorId) {
             const container = document.getElementById('visitor-chat-messages');
             if (!container) return;
@@ -1873,6 +2005,9 @@
                                 <span class="text-[9px] text-slate-400">${lastMsgTime}</span>
                             </div>
                             <p class="text-[10px] text-slate-400 truncate mt-0.5">${lastMsgText}</p>
+                            <p class="text-[9px] text-indigo-500 mt-0.5">
+                                <i class="fa-brands fa-whatsapp mr-1"></i>${visitor.phone || 'Tidak ada nomor'}
+                            </p>
                         </div>
                         ${unreadCount > 0 ? `<span class="bg-red-500 text-white text-[9px] font-bold w-5 h-5 rounded-full flex items-center justify-center">${unreadCount}</span>` : ''}
                     </div>`;
@@ -1888,6 +2023,12 @@
             
             switchPage('page-admin-chat-conversation');
             document.getElementById('admin-chat-visitor-name').textContent = visitor ? visitor.name : 'Pengunjung';
+            
+            // Tampilkan nomor HP pengunjung di header
+            const phoneEl = document.querySelector('#page-admin-chat-conversation .text-slate-400');
+            if (phoneEl && visitor) {
+                phoneEl.textContent = '📱 ' + (visitor.phone || 'Tidak ada nomor');
+            }
             
             renderAdminMessages(visitorId);
             document.getElementById('admin-chat-input').focus();
@@ -1984,8 +2125,8 @@
         }
 
         console.log('✅ Blok 14 – Sistem Chat Pengunjung & Admin siap');
-        console.log('💬 Pengunjung bisa chat langsung ke admin');
-        console.log('👑 Admin bisa melihat & membalas pesan pengunjung');
+        console.log('👤 Pengunjung wajib isi Nama & Nomor HP/WhatsApp');
+        console.log('👑 Admin bisa melihat identitas pengunjung');
     </script>
 <!-- END BLOK 14 -->
 
