@@ -680,10 +680,8 @@
 <!-- ===== HALAMAN DASBOR IKLAN APLIKASI → BLOK 8 - DASBOR IKLAN APLIKASI PRO - MODAL TAMBAH/EDIT APLIKASI ===== -->
 <!-- ============================================================
      BLOK 8 - DASBOR IKLAN APLIKASI PRO - MODAL TAMBAH/EDIT APLIKASI
-     (Form Nama, Link, Deskripsi, Ikon, Edit HTML, GitHub, Vercel)
+     (Form Nama, Link, Deskripsi, Ikon - tanpa field pembaruan)
      ============================================================ -->
-
-<!-- MODAL TAMBAH/EDIT APLIKASI -->
 <div id="appFormModal" class="modal-overlay hidden">
     <div class="modal-content" style="max-width:450px;">
         
@@ -695,7 +693,7 @@
                 </div>
                 <div>
                     <h3 id="app-form-title" class="font-bold text-base">Tambah Aplikasi Baru</h3>
-                    <p class="text-[10px] text-indigo-200">Isi data aplikasi dengan lengkap</p>
+                    <p class="text-[10px] text-indigo-200">Isi data utama aplikasi dengan lengkap</p>
                 </div>
             </div>
             <button onclick="closeAppFormModal()" class="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center cursor-pointer transition-all text-white">
@@ -707,7 +705,7 @@
         <div class="p-5 space-y-4 max-h-[60vh] overflow-y-auto">
             <input type="hidden" id="edit-app-id" value="-1">
             
-            <!-- BAGIAN DATA UTAMA -->
+            <!-- DATA UTAMA APLIKASI -->
             <div class="bg-slate-50 rounded-xl p-4 border border-slate-100 space-y-3">
                 <h4 class="text-xs font-bold text-slate-500 uppercase flex items-center gap-2">
                     <i class="fa-solid fa-info-circle text-indigo-500"></i> Data Utama Aplikasi
@@ -749,52 +747,6 @@
                            maxlength="2">
                     <p class="text-[9px] text-slate-400 mt-1">
                         <i class="fa-solid fa-circle-info mr-1"></i> Gunakan 1-2 emoji sebagai ikon aplikasi
-                    </p>
-                </div>
-            </div>
-            
-            <!-- BAGIAN PEMBARUAN -->
-            <div class="bg-slate-50 rounded-xl p-4 border border-slate-100 space-y-3">
-                <h4 class="text-xs font-bold text-slate-500 uppercase flex items-center gap-2">
-                    <i class="fa-solid fa-rotate text-emerald-500"></i> Link Pembaruan Aplikasi
-                </h4>
-                
-                <!-- LINK EDIT HTML -->
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">
-                        <i class="fa-solid fa-file-code text-amber-500 mr-1"></i> Link Edit HTML
-                    </label>
-                    <input type="text" id="app-edit-html" 
-                           class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
-                           placeholder="Contoh: https://html-editor.com/app">
-                    <p class="text-[9px] text-slate-400 mt-1">
-                        <i class="fa-solid fa-circle-info mr-1"></i> Link untuk mengedit kode HTML aplikasi
-                    </p>
-                </div>
-                
-                <!-- LINK GITHUB -->
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">
-                        <i class="fa-brands fa-github text-slate-700 mr-1"></i> Link GitHub
-                    </label>
-                    <input type="text" id="app-github" 
-                           class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
-                           placeholder="Contoh: https://github.com/user/repo">
-                    <p class="text-[9px] text-slate-400 mt-1">
-                        <i class="fa-solid fa-circle-info mr-1"></i> Link repository GitHub aplikasi
-                    </p>
-                </div>
-                
-                <!-- LINK VERCEL -->
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">
-                        <i class="fa-solid fa-cloud text-sky-500 mr-1"></i> Link Vercel
-                    </label>
-                    <input type="text" id="app-vercel" 
-                           class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
-                           placeholder="Contoh: https://app.vercel.app">
-                    <p class="text-[9px] text-slate-400 mt-1">
-                        <i class="fa-solid fa-circle-info mr-1"></i> Link deploy Vercel aplikasi
                     </p>
                 </div>
             </div>
@@ -2135,412 +2087,87 @@
 
 <!-- ===== HALAMAN DASBOR IKLAN APLIKASI → BLOK 15 - DASBOR IKLAN APLIKASI PRO - HALAMAN PEMBARUAN APLIKASI ===== -->
 <!-- ============================================================
-     BLOK 16 - DASBOR IKLAN APLIKASI PRO - JAVASCRIPT PEMBARUAN
-     (Render Halaman Pembaruan + Edit Admin + Tombol Edit untuk Admin)
+     BLOK 15 - DASBOR IKLAN APLIKASI PRO - HALAMAN PEMBARUAN APLIKASI
+     (Superadmin only: Nama Aplikasi, Link GitHub, Link Vercel, Simpan)
      ============================================================ -->
-    <script>
-        // ========== RENDER HALAMAN PEMBARUAN APLIKASI ==========
-        function renderUpdateList() {
-            const container = document.getElementById('update-app-list');
-            if (!container) return;
-            container.innerHTML = '';
+            <div id="page-app-updates" class="hidden space-y-5 page-transition">
+                
+                <!-- HEADER -->
+                <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                    <div>
+                        <span class="px-2 py-0.5 text-[9px] font-extrabold bg-emerald-100 text-emerald-700 rounded-full uppercase tracking-wider">
+                            <i class="fa-solid fa-rotate mr-1"></i> Pembaruan
+                        </span>
+                        <h2 class="text-md font-bold text-slate-700 mt-0.5 flex items-center gap-2">
+                            <i class="fa-solid fa-code-branch text-emerald-500"></i> Pembaruan Aplikasi
+                        </h2>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <!-- Tombol Tambah Aplikasi (admin only) -->
+                        <button onclick="openAppFormModal()" id="btn-add-app-update"
+                                class="admin-only-element text-xs font-semibold bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-lg transition-all cursor-pointer"
+                                style="display: none;">
+                            <i class="fa-solid fa-plus mr-1"></i> Tambah Aplikasi
+                        </button>
+                        <!-- Tombol kembali ke Beranda -->
+                        <button onclick="switchPage('page-home')" 
+                                class="text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1.5 rounded-lg transition-all cursor-pointer">
+                            <i class="fa-solid fa-house mr-1"></i> Beranda
+                        </button>
+                    </div>
+                </div>
 
-            // Tampilkan SEMUA aplikasi (bukan hanya yang memiliki link pembaruan)
-            // Agar admin bisa melihat semua dan mengedit yang belum memiliki link
-            const appsToShow = appList;
+                <!-- SUBTITLE & PENCARIAN -->
+                <div class="text-center space-y-2">
+                    <p class="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">
+                        Kelola link GitHub dan Vercel untuk setiap aplikasi. Perubahan langsung tersimpan.
+                    </p>
+                    <div class="relative max-w-xs mx-auto">
+                        <input type="text" id="update-search-input" 
+                               class="w-full px-4 py-2.5 pl-10 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                               placeholder="Cari aplikasi..."
+                               oninput="filterUpdateList()">
+                        <i class="fa-solid fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <button onclick="clearUpdateSearch()" id="update-search-clear" 
+                                class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-red-500 cursor-pointer">
+                            <i class="fa-solid fa-xmark text-xs"></i>
+                        </button>
+                    </div>
+                </div>
 
-            if (appsToShow.length === 0) {
-                document.getElementById('update-empty-state').classList.remove('hidden');
-                document.getElementById('update-app-count').textContent = '0';
-                // Sembunyikan tombol tambah jika bukan admin
-                updateAdminOnlyElements();
-                return;
-            }
+                <!-- DAFTAR APLIKASI DENGAN INPUT PEMBARUAN -->
+                <div class="space-y-1.5">
+                    <h3 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider flex items-center gap-2 px-1">
+                        <i class="fa-solid fa-list-check text-emerald-400"></i> Daftar Aplikasi
+                        <span id="update-app-count" class="bg-emerald-100 text-emerald-600 px-2 py-0.5 rounded-full text-[9px]">0</span>
+                    </h3>
+                    <div id="update-app-list" class="space-y-3 max-h-[500px] overflow-y-auto pr-1">
+                        <!-- Konten akan dirender oleh JavaScript -->
+                        <div class="text-center text-slate-400 py-6 text-xs italic">Memuat daftar aplikasi...</div>
+                    </div>
+                    
+                    <div id="update-empty-state" class="text-center py-8 hidden">
+                        <div class="text-4xl mb-2">📭</div>
+                        <p class="text-xs text-slate-400 font-medium">Belum ada aplikasi</p>
+                        <p class="text-[10px] text-slate-400 mt-1">Tambahkan aplikasi terlebih dahulu</p>
+                    </div>
+                </div>
 
-            document.getElementById('update-empty-state').classList.add('hidden');
-            document.getElementById('update-app-count').textContent = appsToShow.length;
-            
-            // Tampilkan/sembunyikan elemen khusus admin
-            updateAdminOnlyElements();
-
-            appsToShow.forEach(app => {
-                container.innerHTML += `
-                    <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
-                        <!-- HEADER APLIKASI -->
-                        <div class="flex items-center gap-3 mb-3 pb-3 border-b border-slate-100">
-                            <div class="text-3xl">${app.ikon || '📱'}</div>
-                            <div class="flex-1">
-                                <h4 class="text-sm font-extrabold text-slate-800">${app.nama}</h4>
-                                <p class="text-[10px] text-slate-400 mt-0.5">${app.deskripsi || 'Aplikasi Pro'}</p>
-                            </div>
-                            <div class="flex items-center gap-1">
-                                <button onclick="openApp('${app.id}')" 
-                                        class="w-8 h-8 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center text-xs cursor-pointer transition-all"
-                                        title="Buka Aplikasi">
-                                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                                </button>
-                                ${currentAdmin ? `
-                                <button onclick="openAppFormModal(${app.id})" 
-                                        class="w-8 h-8 bg-amber-50 hover:bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center text-xs cursor-pointer transition-all"
-                                        title="Edit Aplikasi">
-                                    <i class="fa-solid fa-pen"></i>
-                                </button>
-                                <button onclick="openDeleteConfirmModal(${app.id})" 
-                                        class="w-8 h-8 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg flex items-center justify-center text-xs cursor-pointer transition-all"
-                                        title="Hapus Aplikasi">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                                ` : ''}
-                            </div>
-                        </div>
-                        
-                        <!-- LINK PEMBARUAN -->
-                        <div class="grid grid-cols-3 gap-2">
-                            <!-- EDIT HTML -->
-                            ${app.editHtml ? `
-                            <a href="${app.editHtml}" target="_blank" 
-                               class="flex flex-col items-center gap-1 p-2.5 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-xl text-center cursor-pointer transition-all group">
-                                <i class="fa-solid fa-file-code text-amber-500 text-lg group-hover:scale-110 transition-transform"></i>
-                                <span class="text-[9px] font-bold text-amber-700">Edit HTML</span>
-                                <span class="text-[8px] text-amber-500 truncate max-w-full">Buka Editor</span>
-                            </a>
-                            ` : `
-                            <div class="flex flex-col items-center gap-1 p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-center opacity-50">
-                                <i class="fa-solid fa-file-code text-slate-400 text-lg"></i>
-                                <span class="text-[9px] font-bold text-slate-400">Edit HTML</span>
-                                <span class="text-[8px] text-slate-400">Belum diatur</span>
-                            </div>
-                            `}
-                            
-                            <!-- GITHUB -->
-                            ${app.github ? `
-                            <a href="${app.github}" target="_blank" 
-                               class="flex flex-col items-center gap-1 p-2.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-xl text-center cursor-pointer transition-all group">
-                                <i class="fa-brands fa-github text-slate-700 text-lg group-hover:scale-110 transition-transform"></i>
-                                <span class="text-[9px] font-bold text-slate-700">GitHub</span>
-                                <span class="text-[8px] text-slate-500 truncate max-w-full">Repository</span>
-                            </a>
-                            ` : `
-                            <div class="flex flex-col items-center gap-1 p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-center opacity-50">
-                                <i class="fa-brands fa-github text-slate-400 text-lg"></i>
-                                <span class="text-[9px] font-bold text-slate-400">GitHub</span>
-                                <span class="text-[8px] text-slate-400">Belum diatur</span>
-                            </div>
-                            `}
-                            
-                            <!-- VERCEL -->
-                            ${app.vercel ? `
-                            <a href="${app.vercel}" target="_blank" 
-                               class="flex flex-col items-center gap-1 p-2.5 bg-sky-50 hover:bg-sky-100 border border-sky-200 rounded-xl text-center cursor-pointer transition-all group">
-                                <i class="fa-solid fa-cloud text-sky-500 text-lg group-hover:scale-110 transition-transform"></i>
-                                <span class="text-[9px] font-bold text-sky-700">Vercel</span>
-                                <span class="text-[8px] text-sky-500 truncate max-w-full">Deploy</span>
-                            </a>
-                            ` : `
-                            <div class="flex flex-col items-center gap-1 p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-center opacity-50">
-                                <i class="fa-solid fa-cloud text-slate-400 text-lg"></i>
-                                <span class="text-[9px] font-bold text-slate-400">Vercel</span>
-                                <span class="text-[8px] text-slate-400">Belum diatur</span>
-                            </div>
-                            `}
-                        </div>
-                    </div>`;
-            });
-        }
-
-        function filterUpdateList() {
-            const searchTerm = document.getElementById('update-search-input').value.toLowerCase().trim();
-            const container = document.getElementById('update-app-list');
-            if (!container) return;
-            container.innerHTML = '';
-
-            const clearBtn = document.getElementById('update-search-clear');
-            if (searchTerm.length > 0) {
-                clearBtn.classList.remove('hidden');
-            } else {
-                clearBtn.classList.add('hidden');
-            }
-
-            const filteredApps = searchTerm.length > 0 
-                ? appList.filter(app => app.nama.toLowerCase().includes(searchTerm))
-                : appList;
-
-            if (filteredApps.length === 0) {
-                document.getElementById('update-empty-state').classList.remove('hidden');
-                document.getElementById('update-app-count').textContent = '0';
-                return;
-            }
-
-            document.getElementById('update-empty-state').classList.add('hidden');
-            document.getElementById('update-app-count').textContent = filteredApps.length;
-            
-            updateAdminOnlyElements();
-
-            filteredApps.forEach(app => {
-                container.innerHTML += `
-                    <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
-                        <div class="flex items-center gap-3 mb-3 pb-3 border-b border-slate-100">
-                            <div class="text-3xl">${app.ikon || '📱'}</div>
-                            <div class="flex-1">
-                                <h4 class="text-sm font-extrabold text-slate-800">${app.nama}</h4>
-                                <p class="text-[10px] text-slate-400 mt-0.5">${app.deskripsi || 'Aplikasi Pro'}</p>
-                            </div>
-                            <div class="flex items-center gap-1">
-                                <button onclick="openApp('${app.id}')" 
-                                        class="w-8 h-8 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center text-xs cursor-pointer transition-all"
-                                        title="Buka Aplikasi">
-                                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                                </button>
-                                ${currentAdmin ? `
-                                <button onclick="openAppFormModal(${app.id})" 
-                                        class="w-8 h-8 bg-amber-50 hover:bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center text-xs cursor-pointer transition-all"
-                                        title="Edit Aplikasi">
-                                    <i class="fa-solid fa-pen"></i>
-                                </button>
-                                <button onclick="openDeleteConfirmModal(${app.id})" 
-                                        class="w-8 h-8 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg flex items-center justify-center text-xs cursor-pointer transition-all"
-                                        title="Hapus Aplikasi">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                                ` : ''}
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-3 gap-2">
-                            ${app.editHtml ? `
-                            <a href="${app.editHtml}" target="_blank" 
-                               class="flex flex-col items-center gap-1 p-2.5 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-xl text-center cursor-pointer transition-all group">
-                                <i class="fa-solid fa-file-code text-amber-500 text-lg group-hover:scale-110 transition-transform"></i>
-                                <span class="text-[9px] font-bold text-amber-700">Edit HTML</span>
-                                <span class="text-[8px] text-amber-500 truncate max-w-full">Buka Editor</span>
-                            </a>
-                            ` : `
-                            <div class="flex flex-col items-center gap-1 p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-center opacity-50">
-                                <i class="fa-solid fa-file-code text-slate-400 text-lg"></i>
-                                <span class="text-[9px] font-bold text-slate-400">Edit HTML</span>
-                                <span class="text-[8px] text-slate-400">Belum diatur</span>
-                            </div>
-                            `}
-                            ${app.github ? `
-                            <a href="${app.github}" target="_blank" 
-                               class="flex flex-col items-center gap-1 p-2.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-xl text-center cursor-pointer transition-all group">
-                                <i class="fa-brands fa-github text-slate-700 text-lg group-hover:scale-110 transition-transform"></i>
-                                <span class="text-[9px] font-bold text-slate-700">GitHub</span>
-                                <span class="text-[8px] text-slate-500 truncate max-w-full">Repository</span>
-                            </a>
-                            ` : `
-                            <div class="flex flex-col items-center gap-1 p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-center opacity-50">
-                                <i class="fa-brands fa-github text-slate-400 text-lg"></i>
-                                <span class="text-[9px] font-bold text-slate-400">GitHub</span>
-                                <span class="text-[8px] text-slate-400">Belum diatur</span>
-                            </div>
-                            `}
-                            ${app.vercel ? `
-                            <a href="${app.vercel}" target="_blank" 
-                               class="flex flex-col items-center gap-1 p-2.5 bg-sky-50 hover:bg-sky-100 border border-sky-200 rounded-xl text-center cursor-pointer transition-all group">
-                                <i class="fa-solid fa-cloud text-sky-500 text-lg group-hover:scale-110 transition-transform"></i>
-                                <span class="text-[9px] font-bold text-sky-700">Vercel</span>
-                                <span class="text-[8px] text-sky-500 truncate max-w-full">Deploy</span>
-                            </a>
-                            ` : `
-                            <div class="flex flex-col items-center gap-1 p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-center opacity-50">
-                                <i class="fa-solid fa-cloud text-slate-400 text-lg"></i>
-                                <span class="text-[9px] font-bold text-slate-400">Vercel</span>
-                                <span class="text-[8px] text-slate-400">Belum diatur</span>
-                            </div>
-                            `}
-                        </div>
-                    </div>`;
-            });
-        }
-
-        function clearUpdateSearch() {
-            document.getElementById('update-search-input').value = '';
-            document.getElementById('update-search-clear').classList.add('hidden');
-            renderUpdateList();
-        }
-
-        // ========== TAMPILKAN/SEMBUNYIKAN ELEMEN ADMIN ==========
-        function updateAdminOnlyElements() {
-            const adminElements = document.querySelectorAll('.admin-only-element');
-            adminElements.forEach(el => {
-                el.style.display = currentAdmin ? '' : 'none';
-            });
-            
-            // Tombol tambah di halaman pembaruan
-            const btnAdd = document.getElementById('btn-add-app-update');
-            if (btnAdd) {
-                btnAdd.style.display = currentAdmin ? '' : 'none';
-            }
-        }
-
-        // ========== UPDATE FUNGSI openEditProfileModal ==========
-        function openEditProfileModal() {
-            document.getElementById('profileEditModal').classList.remove('hidden');
-            
-            // Isi data admin
-            document.getElementById('edit-admin-username').value = adminData.username;
-            document.getElementById('edit-admin-password').value = '';
-            document.getElementById('edit-admin-password-confirm').value = '';
-            document.getElementById('edit-admin-email').value = adminData.email;
-            document.getElementById('edit-admin-hp').value = adminData.hp;
-            
-            // Isi data profil
-            document.getElementById('edit-profile-name').value = profileData.nama;
-            document.getElementById('edit-profile-role').value = profileData.role;
-            document.getElementById('edit-profile-description').value = profileData.deskripsi;
-            document.getElementById('edit-profile-wa').value = profileData.wa;
-            document.getElementById('edit-profile-telegram').value = profileData.telegram;
-            document.getElementById('edit-profile-email').value = profileData.email;
-            
-            // Isi teks halaman
-            document.getElementById('edit-home-subtitle').value = pageTexts.subtitle;
-            document.getElementById('edit-app-list-title').value = pageTexts.judulApps;
-            document.getElementById('edit-stat-apps').value = pageTexts.statApps;
-            document.getElementById('edit-stat-users').value = pageTexts.statUsers;
-            document.getElementById('edit-stat-updates').value = pageTexts.statUpdates;
-        }
-
-        // ========== UPDATE FUNGSI saveProfileData ==========
-        function saveProfileData() {
-            // Simpan data admin
-            const newUsername = document.getElementById('edit-admin-username').value.trim();
-            const newPassword = document.getElementById('edit-admin-password').value.trim();
-            const newPasswordConfirm = document.getElementById('edit-admin-password-confirm').value.trim();
-            const newEmail = document.getElementById('edit-admin-email').value.trim();
-            const newHp = document.getElementById('edit-admin-hp').value.trim();
-
-            if (!newUsername) {
-                showToast('⚠️ Username admin tidak boleh kosong!', 'error');
-                return;
-            }
-
-            if (newPassword) {
-                if (newPassword.length < 6) {
-                    showToast('⚠️ Password minimal 6 karakter!', 'error');
-                    return;
-                }
-                if (newPassword !== newPasswordConfirm) {
-                    showToast('⚠️ Password tidak cocok!', 'error');
-                    return;
-                }
-                adminData.password = newPassword;
-            }
-
-            adminData.username = newUsername;
-            adminData.email = newEmail;
-            adminData.hp = newHp;
-            saveAdminData();
-
-            // Simpan data profil
-            profileData.nama = document.getElementById('edit-profile-name').value.trim();
-            profileData.role = document.getElementById('edit-profile-role').value.trim();
-            profileData.deskripsi = document.getElementById('edit-profile-description').value.trim();
-            profileData.wa = document.getElementById('edit-profile-wa').value.trim();
-            profileData.telegram = document.getElementById('edit-profile-telegram').value.trim();
-            profileData.email = document.getElementById('edit-profile-email').value.trim();
-            saveProfileData();
-
-            // Simpan teks halaman
-            pageTexts.subtitle = document.getElementById('edit-home-subtitle').value.trim();
-            pageTexts.judulApps = document.getElementById('edit-app-list-title').value.trim();
-            pageTexts.statApps = document.getElementById('edit-stat-apps').value.trim();
-            pageTexts.statUsers = document.getElementById('edit-stat-users').value.trim();
-            pageTexts.statUpdates = document.getElementById('edit-stat-updates').value.trim();
-            savePageTexts();
-
-            closeProfileEditModal();
-            loadProfileAndTexts();
-            showToast('✅ Profil, teks, dan akun admin berhasil diperbarui!', 'success');
-        }
-
-        // ========== UPDATE FUNGSI handleAdminLogin ==========
-        function handleAdminLogin() {
-            const userInp = document.getElementById('admin-username').value.trim();
-            const passInp = document.getElementById('admin-password').value.trim();
-            const errEl = document.getElementById('login-admin-error');
-            const errText = document.getElementById('login-admin-error-text');
-
-            if (!userInp || !passInp) {
-                errEl.classList.remove('hidden');
-                errText.textContent = 'Semua field wajib diisi!';
-                return;
-            }
-
-            if (userInp === adminData.username && passInp === adminData.password) {
-                currentAdmin = true;
-                errEl.classList.add('hidden');
-                document.getElementById('admin-username').value = '';
-                document.getElementById('admin-password').value = '';
-                updateAdminOnlyElements();
-                switchPage('page-admin-dashboard');
-                showToast('✅ Selamat datang, Admin!', 'success');
-            } else {
-                errEl.classList.remove('hidden');
-                errText.textContent = 'Username atau Password salah!';
-            }
-        }
-
-        // ========== UPDATE FUNGSI switchPage ==========
-        function switchPage(pageId) {
-            const pages = [
-                'page-home', 'page-login-admin', 'page-forgot-admin', 'page-reset-admin',
-                'page-admin-dashboard', 'page-chat-visitor', 'page-admin-chat-list',
-                'page-admin-chat-conversation', 'page-app-updates'
-            ];
-            pages.forEach(p => {
-                const el = document.getElementById(p);
-                if (el) el.classList.add('hidden');
-            });
-            const target = document.getElementById(pageId);
-            if (target) {
-                target.classList.remove('hidden');
-                target.classList.add('page-transition');
-            }
-
-            if (pageId === 'page-home') {
-                renderAppList();
-                loadProfileAndTexts();
-                updateAdminOnlyElements();
-            }
-            if (pageId === 'page-admin-dashboard') {
-                renderAdminAppList();
-                updateAdminStats();
-                updateAdminOnlyElements();
-            }
-            if (pageId === 'page-app-updates') {
-                renderUpdateList();
-                updateAdminOnlyElements();
-            }
-            if (pageId === 'page-admin-chat-list') {
-                renderAdminVisitorList();
-                updateAdminOnlyElements();
-            }
-        }
-
-        // ========== UPDATE INIT ==========
-        (function init() {
-            document.getElementById('currentYear').textContent = new Date().getFullYear();
-            createDefaultApps();
-            loadProfileAndTexts();
-            renderAppList();
-            updateAdminOnlyElements();
-            console.log('✅ Dasbor Iklan Aplikasi Pro siap!');
-            console.log('👤 Admin Login: admin / admin123');
-            console.log('📱 ' + appList.length + ' aplikasi siap digunakan');
-            console.log('🔄 Halaman Pembaruan Aplikasi dengan Edit Admin siap');
-            console.log('🔐 Edit Akun Admin (username, password, email, hp) siap');
-        })();
-
-        console.log('✅ Blok 16 – Pembaruan Aplikasi + Edit Admin siap');
-    </script>
-<!-- END BLOK 16 -->
+                <!-- KEMBALI KE HALAMAN DEPAN -->
+                <div class="text-center pt-2 border-t border-slate-100">
+                    <button onclick="switchPage('page-home')" 
+                            class="text-xs font-medium text-slate-400 hover:text-emerald-500 cursor-pointer transition-colors">
+                        <i class="fa-solid fa-arrow-left mr-1"></i> Kembali ke Halaman Depan
+                    </button>
+                </div>
+            </div>
+<!-- END BLOK 15 -->
 
 
 <!-- ===== HALAMAN DASBOR IKLAN APLIKASI → BLOK 16 - DASBOR IKLAN APLIKASI PRO - JAVASCRIPT PEMBARUAN ===== -->
 <!-- ============================================================
      BLOK 16 - DASBOR IKLAN APLIKASI PRO - JAVASCRIPT PEMBARUAN
-     (Render Halaman Pembaruan + Edit Admin + Tombol Edit untuk Admin
-      + Perbaikan renderUpdateList, switchPage, updateAdminOnlyElements)
+     (Render Halaman Pembaruan + Simpan GitHub/Vercel + Filter + Admin Only)
      ============================================================ -->
     <script>
         // ========== RENDER HALAMAN PEMBARUAN APLIKASI ==========
@@ -2549,7 +2176,6 @@
             if (!container) return;
             container.innerHTML = '';
 
-            // Tampilkan SEMUA aplikasi
             const appsToShow = appList;
 
             if (appsToShow.length === 0) {
@@ -2561,7 +2187,6 @@
 
             document.getElementById('update-empty-state').classList.add('hidden');
             document.getElementById('update-app-count').textContent = appsToShow.length;
-            
             updateAdminOnlyElements();
 
             appsToShow.forEach(app => {
@@ -2572,8 +2197,9 @@
                             <div class="text-3xl">${app.ikon || '📱'}</div>
                             <div class="flex-1">
                                 <h4 class="text-sm font-extrabold text-slate-800">${app.nama}</h4>
-                                <p class="text-[10px] text-slate-400 mt-0.5">${app.deskripsi || 'Aplikasi Pro'}</p>
+                                <p class="text-[10px] text-slate-400">${app.deskripsi || 'Aplikasi Pro'}</p>
                             </div>
+                            <!-- Tombol Edit (buka modal lengkap) & Hapus (admin only) -->
                             <div class="flex items-center gap-1">
                                 <button onclick="openApp('${app.id}')" 
                                         class="w-8 h-8 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center text-xs cursor-pointer transition-all"
@@ -2582,73 +2208,71 @@
                                 </button>
                                 <button onclick="openAppFormModal(${app.id})" 
                                         class="admin-only-element w-8 h-8 bg-amber-50 hover:bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center text-xs cursor-pointer transition-all"
-                                        title="Edit Aplikasi"
-                                        style="display: none;">
+                                        title="Edit Data Utama" style="display: none;">
                                     <i class="fa-solid fa-pen"></i>
                                 </button>
                                 <button onclick="openDeleteConfirmModal(${app.id})" 
                                         class="admin-only-element w-8 h-8 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg flex items-center justify-center text-xs cursor-pointer transition-all"
-                                        title="Hapus Aplikasi"
-                                        style="display: none;">
+                                        title="Hapus Aplikasi" style="display: none;">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
                             </div>
                         </div>
                         
-                        <!-- LINK PEMBARUAN -->
-                        <div class="grid grid-cols-3 gap-2">
-                            <!-- EDIT HTML -->
-                            ${app.editHtml ? `
-                            <a href="${app.editHtml}" target="_blank" 
-                               class="flex flex-col items-center gap-1 p-2.5 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-xl text-center cursor-pointer transition-all group">
-                                <i class="fa-solid fa-file-code text-amber-500 text-lg group-hover:scale-110 transition-transform"></i>
-                                <span class="text-[9px] font-bold text-amber-700">Edit HTML</span>
-                                <span class="text-[8px] text-amber-500 truncate max-w-full">Buka Editor</span>
-                            </a>
-                            ` : `
-                            <div class="flex flex-col items-center gap-1 p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-center opacity-50">
-                                <i class="fa-solid fa-file-code text-slate-400 text-lg"></i>
-                                <span class="text-[9px] font-bold text-slate-400">Edit HTML</span>
-                                <span class="text-[8px] text-slate-400">Belum diatur</span>
+                        <!-- INPUT LINK PEMBARUAN (ADMIN ONLY) -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[9px] font-bold text-slate-500 uppercase mb-1">
+                                    <i class="fa-brands fa-github mr-1"></i> Link GitHub
+                                </label>
+                                <input type="text" id="github-${app.id}" 
+                                       class="admin-only-element w-full px-2 py-2 bg-slate-50 border border-slate-200 rounded-lg text-[10px] focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                                       placeholder="https://github.com/..." 
+                                       value="${app.github || ''}"
+                                       style="display: none;">
                             </div>
-                            `}
-                            
-                            <!-- GITHUB -->
-                            ${app.github ? `
-                            <a href="${app.github}" target="_blank" 
-                               class="flex flex-col items-center gap-1 p-2.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-xl text-center cursor-pointer transition-all group">
-                                <i class="fa-brands fa-github text-slate-700 text-lg group-hover:scale-110 transition-transform"></i>
-                                <span class="text-[9px] font-bold text-slate-700">GitHub</span>
-                                <span class="text-[8px] text-slate-500 truncate max-w-full">Repository</span>
-                            </a>
-                            ` : `
-                            <div class="flex flex-col items-center gap-1 p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-center opacity-50">
-                                <i class="fa-brands fa-github text-slate-400 text-lg"></i>
-                                <span class="text-[9px] font-bold text-slate-400">GitHub</span>
-                                <span class="text-[8px] text-slate-400">Belum diatur</span>
+                            <div>
+                                <label class="block text-[9px] font-bold text-slate-500 uppercase mb-1">
+                                    <i class="fa-solid fa-cloud mr-1"></i> Link Vercel
+                                </label>
+                                <input type="text" id="vercel-${app.id}" 
+                                       class="admin-only-element w-full px-2 py-2 bg-slate-50 border border-slate-200 rounded-lg text-[10px] focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                                       placeholder="https://vercel.com/..." 
+                                       value="${app.vercel || ''}"
+                                       style="display: none;">
                             </div>
-                            `}
-                            
-                            <!-- VERCEL -->
-                            ${app.vercel ? `
-                            <a href="${app.vercel}" target="_blank" 
-                               class="flex flex-col items-center gap-1 p-2.5 bg-sky-50 hover:bg-sky-100 border border-sky-200 rounded-xl text-center cursor-pointer transition-all group">
-                                <i class="fa-solid fa-cloud text-sky-500 text-lg group-hover:scale-110 transition-transform"></i>
-                                <span class="text-[9px] font-bold text-sky-700">Vercel</span>
-                                <span class="text-[8px] text-sky-500 truncate max-w-full">Deploy</span>
-                            </a>
-                            ` : `
-                            <div class="flex flex-col items-center gap-1 p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-center opacity-50">
-                                <i class="fa-solid fa-cloud text-slate-400 text-lg"></i>
-                                <span class="text-[9px] font-bold text-slate-400">Vercel</span>
-                                <span class="text-[8px] text-slate-400">Belum diatur</span>
-                            </div>
-                            `}
                         </div>
+                        
+                        <!-- TOMBOL SIMPAN PEMBARUAN (ADMIN ONLY) -->
+                        <button onclick="saveAppUpdate(${app.id})" 
+                                class="admin-only-element mt-3 w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 rounded-xl text-[10px] cursor-pointer transition-all active:scale-95 flex items-center justify-center gap-1"
+                                style="display: none;">
+                            <i class="fa-solid fa-floppy-disk mr-1"></i> Simpan Pembaruan
+                        </button>
                     </div>`;
             });
         }
 
+        // ========== SIMPAN PEMBARUAN CEPAT (GITHUB & VERCEL) ==========
+        function saveAppUpdate(appId) {
+            const githubInput = document.getElementById(`github-${appId}`);
+            const vercelInput = document.getElementById(`vercel-${appId}`);
+            
+            const github = githubInput ? githubInput.value.trim() : '';
+            const vercel = vercelInput ? vercelInput.value.trim() : '';
+
+            const appIndex = appList.findIndex(a => a.id == appId);
+            if (appIndex !== -1) {
+                appList[appIndex].github = github;
+                appList[appIndex].vercel = vercel;
+                saveAppList();
+                showToast('✅ Link GitHub & Vercel berhasil diperbarui!', 'success');
+            } else {
+                showToast('⚠️ Aplikasi tidak ditemukan!', 'error');
+            }
+        }
+
+        // ========== FILTER & PENCARIAN ==========
         function filterUpdateList() {
             const searchTerm = document.getElementById('update-search-input').value.toLowerCase().trim();
             const container = document.getElementById('update-app-list');
@@ -2675,7 +2299,6 @@
 
             document.getElementById('update-empty-state').classList.add('hidden');
             document.getElementById('update-app-count').textContent = filteredApps.length;
-            
             updateAdminOnlyElements();
 
             filteredApps.forEach(app => {
@@ -2685,7 +2308,7 @@
                             <div class="text-3xl">${app.ikon || '📱'}</div>
                             <div class="flex-1">
                                 <h4 class="text-sm font-extrabold text-slate-800">${app.nama}</h4>
-                                <p class="text-[10px] text-slate-400 mt-0.5">${app.deskripsi || 'Aplikasi Pro'}</p>
+                                <p class="text-[10px] text-slate-400">${app.deskripsi || 'Aplikasi Pro'}</p>
                             </div>
                             <div class="flex items-center gap-1">
                                 <button onclick="openApp('${app.id}')" 
@@ -2695,62 +2318,41 @@
                                 </button>
                                 <button onclick="openAppFormModal(${app.id})" 
                                         class="admin-only-element w-8 h-8 bg-amber-50 hover:bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center text-xs cursor-pointer transition-all"
-                                        title="Edit Aplikasi"
-                                        style="display: none;">
+                                        title="Edit Data Utama" style="display: none;">
                                     <i class="fa-solid fa-pen"></i>
                                 </button>
                                 <button onclick="openDeleteConfirmModal(${app.id})" 
                                         class="admin-only-element w-8 h-8 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg flex items-center justify-center text-xs cursor-pointer transition-all"
-                                        title="Hapus Aplikasi"
-                                        style="display: none;">
+                                        title="Hapus Aplikasi" style="display: none;">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
                             </div>
                         </div>
-                        <div class="grid grid-cols-3 gap-2">
-                            ${app.editHtml ? `
-                            <a href="${app.editHtml}" target="_blank" 
-                               class="flex flex-col items-center gap-1 p-2.5 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-xl text-center cursor-pointer transition-all group">
-                                <i class="fa-solid fa-file-code text-amber-500 text-lg group-hover:scale-110 transition-transform"></i>
-                                <span class="text-[9px] font-bold text-amber-700">Edit HTML</span>
-                                <span class="text-[8px] text-amber-500 truncate max-w-full">Buka Editor</span>
-                            </a>
-                            ` : `
-                            <div class="flex flex-col items-center gap-1 p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-center opacity-50">
-                                <i class="fa-solid fa-file-code text-slate-400 text-lg"></i>
-                                <span class="text-[9px] font-bold text-slate-400">Edit HTML</span>
-                                <span class="text-[8px] text-slate-400">Belum diatur</span>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[9px] font-bold text-slate-500 uppercase mb-1">
+                                    <i class="fa-brands fa-github mr-1"></i> Link GitHub
+                                </label>
+                                <input type="text" id="github-${app.id}" 
+                                       class="admin-only-element w-full px-2 py-2 bg-slate-50 border border-slate-200 rounded-lg text-[10px] focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                                       value="${app.github || ''}"
+                                       style="display: none;">
                             </div>
-                            `}
-                            ${app.github ? `
-                            <a href="${app.github}" target="_blank" 
-                               class="flex flex-col items-center gap-1 p-2.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-xl text-center cursor-pointer transition-all group">
-                                <i class="fa-brands fa-github text-slate-700 text-lg group-hover:scale-110 transition-transform"></i>
-                                <span class="text-[9px] font-bold text-slate-700">GitHub</span>
-                                <span class="text-[8px] text-slate-500 truncate max-w-full">Repository</span>
-                            </a>
-                            ` : `
-                            <div class="flex flex-col items-center gap-1 p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-center opacity-50">
-                                <i class="fa-brands fa-github text-slate-400 text-lg"></i>
-                                <span class="text-[9px] font-bold text-slate-400">GitHub</span>
-                                <span class="text-[8px] text-slate-400">Belum diatur</span>
+                            <div>
+                                <label class="block text-[9px] font-bold text-slate-500 uppercase mb-1">
+                                    <i class="fa-solid fa-cloud mr-1"></i> Link Vercel
+                                </label>
+                                <input type="text" id="vercel-${app.id}" 
+                                       class="admin-only-element w-full px-2 py-2 bg-slate-50 border border-slate-200 rounded-lg text-[10px] focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                                       value="${app.vercel || ''}"
+                                       style="display: none;">
                             </div>
-                            `}
-                            ${app.vercel ? `
-                            <a href="${app.vercel}" target="_blank" 
-                               class="flex flex-col items-center gap-1 p-2.5 bg-sky-50 hover:bg-sky-100 border border-sky-200 rounded-xl text-center cursor-pointer transition-all group">
-                                <i class="fa-solid fa-cloud text-sky-500 text-lg group-hover:scale-110 transition-transform"></i>
-                                <span class="text-[9px] font-bold text-sky-700">Vercel</span>
-                                <span class="text-[8px] text-sky-500 truncate max-w-full">Deploy</span>
-                            </a>
-                            ` : `
-                            <div class="flex flex-col items-center gap-1 p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-center opacity-50">
-                                <i class="fa-solid fa-cloud text-slate-400 text-lg"></i>
-                                <span class="text-[9px] font-bold text-slate-400">Vercel</span>
-                                <span class="text-[8px] text-slate-400">Belum diatur</span>
-                            </div>
-                            `}
                         </div>
+                        <button onclick="saveAppUpdate(${app.id})" 
+                                class="admin-only-element mt-3 w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 rounded-xl text-[10px] cursor-pointer transition-all active:scale-95 flex items-center justify-center gap-1"
+                                style="display: none;">
+                            <i class="fa-solid fa-floppy-disk mr-1"></i> Simpan Pembaruan
+                        </button>
                     </div>`;
             });
         }
@@ -2761,7 +2363,64 @@
             renderUpdateList();
         }
 
-        // ========== TAMPILKAN/SEMBUNYIKAN ELEMEN ADMIN ==========
+        // ========== UPDATE FUNGSI saveAppData (TANPA FIELD PEMBARUAN) ==========
+        function saveAppData() {
+            const id = document.getElementById('edit-app-id').value;
+            const nama = document.getElementById('app-name').value.trim();
+            const link = document.getElementById('app-link').value.trim();
+            const deskripsi = document.getElementById('app-description').value.trim();
+            const ikon = document.getElementById('app-icon').value.trim();
+
+            if (!nama || !link) {
+                showToast('⚠️ Nama dan Link aplikasi wajib diisi!', 'error');
+                return;
+            }
+
+            if (id === '-1') {
+                const newId = appList.length > 0 ? Math.max(...appList.map(a => a.id)) + 1 : 1;
+                appList.push({ id: newId, nama, link, deskripsi, ikon: ikon || '📱', editHtml: '', github: '', vercel: '' });
+                showToast('✅ Aplikasi baru berhasil ditambahkan!', 'success');
+            } else {
+                const index = appList.findIndex(a => a.id == id);
+                if (index !== -1) {
+                    // Pertahankan nilai github dan vercel yang sudah ada
+                    appList[index] = { ...appList[index], nama, link, deskripsi, ikon: ikon || '📱' };
+                    showToast('✅ Aplikasi berhasil diperbarui!', 'success');
+                }
+            }
+
+            saveAppList();
+            closeAppFormModal();
+            renderAdminAppList();
+            renderUpdateList();
+            updateAdminStats();
+        }
+
+        // ========== UPDATE FUNGSI openAppFormModal ==========
+        function openAppFormModal(appId = null) {
+            document.getElementById('appFormModal').classList.remove('hidden');
+            // Reset form
+            document.getElementById('edit-app-id').value = '-1';
+            document.getElementById('app-name').value = '';
+            document.getElementById('app-link').value = '';
+            document.getElementById('app-description').value = '';
+            document.getElementById('app-icon').value = '';
+            document.getElementById('app-form-title').textContent = 'Tambah Aplikasi Baru';
+
+            if (appId !== null) {
+                const app = appList.find(a => a.id == appId);
+                if (app) {
+                    document.getElementById('edit-app-id').value = app.id;
+                    document.getElementById('app-name').value = app.nama;
+                    document.getElementById('app-link').value = app.link;
+                    document.getElementById('app-description').value = app.deskripsi || '';
+                    document.getElementById('app-icon').value = app.ikon || '';
+                    document.getElementById('app-form-title').textContent = 'Edit Aplikasi';
+                }
+            }
+        }
+
+        // ========== UPDATE FUNGSI updateAdminOnlyElements ==========
         function updateAdminOnlyElements() {
             const adminElements = document.querySelectorAll('.admin-only-element');
             adminElements.forEach(el => {
@@ -2781,203 +2440,6 @@
             }
         }
 
-        // ========== UPDATE FUNGSI openEditProfileModal ==========
-        function openEditProfileModal() {
-            document.getElementById('profileEditModal').classList.remove('hidden');
-            
-            // Isi data admin
-            document.getElementById('edit-admin-username').value = adminData.username;
-            document.getElementById('edit-admin-password').value = '';
-            document.getElementById('edit-admin-password-confirm').value = '';
-            document.getElementById('edit-admin-email').value = adminData.email;
-            document.getElementById('edit-admin-hp').value = adminData.hp;
-            
-            // Isi data profil
-            document.getElementById('edit-profile-name').value = profileData.nama;
-            document.getElementById('edit-profile-role').value = profileData.role;
-            document.getElementById('edit-profile-description').value = profileData.deskripsi;
-            document.getElementById('edit-profile-wa').value = profileData.wa;
-            document.getElementById('edit-profile-telegram').value = profileData.telegram;
-            document.getElementById('edit-profile-email').value = profileData.email;
-            
-            // Isi teks halaman
-            document.getElementById('edit-home-subtitle').value = pageTexts.subtitle;
-            document.getElementById('edit-app-list-title').value = pageTexts.judulApps;
-            document.getElementById('edit-stat-apps').value = pageTexts.statApps;
-            document.getElementById('edit-stat-users').value = pageTexts.statUsers;
-            document.getElementById('edit-stat-updates').value = pageTexts.statUpdates;
-        }
-
-        // ========== UPDATE FUNGSI saveProfileData ==========
-        function saveProfileData() {
-            // Simpan data admin
-            const newUsername = document.getElementById('edit-admin-username').value.trim();
-            const newPassword = document.getElementById('edit-admin-password').value.trim();
-            const newPasswordConfirm = document.getElementById('edit-admin-password-confirm').value.trim();
-            const newEmail = document.getElementById('edit-admin-email').value.trim();
-            const newHp = document.getElementById('edit-admin-hp').value.trim();
-
-            if (!newUsername) {
-                showToast('⚠️ Username admin tidak boleh kosong!', 'error');
-                return;
-            }
-
-            if (newPassword) {
-                if (newPassword.length < 6) {
-                    showToast('⚠️ Password minimal 6 karakter!', 'error');
-                    return;
-                }
-                if (newPassword !== newPasswordConfirm) {
-                    showToast('⚠️ Password tidak cocok!', 'error');
-                    return;
-                }
-                adminData.password = newPassword;
-            }
-
-            adminData.username = newUsername;
-            adminData.email = newEmail;
-            adminData.hp = newHp;
-            saveAdminData();
-
-            // Simpan data profil
-            profileData.nama = document.getElementById('edit-profile-name').value.trim();
-            profileData.role = document.getElementById('edit-profile-role').value.trim();
-            profileData.deskripsi = document.getElementById('edit-profile-description').value.trim();
-            profileData.wa = document.getElementById('edit-profile-wa').value.trim();
-            profileData.telegram = document.getElementById('edit-profile-telegram').value.trim();
-            profileData.email = document.getElementById('edit-profile-email').value.trim();
-            saveProfileData();
-
-            // Simpan teks halaman
-            pageTexts.subtitle = document.getElementById('edit-home-subtitle').value.trim();
-            pageTexts.judulApps = document.getElementById('edit-app-list-title').value.trim();
-            pageTexts.statApps = document.getElementById('edit-stat-apps').value.trim();
-            pageTexts.statUsers = document.getElementById('edit-stat-users').value.trim();
-            pageTexts.statUpdates = document.getElementById('edit-stat-updates').value.trim();
-            savePageTexts();
-
-            closeProfileEditModal();
-            loadProfileAndTexts();
-            showToast('✅ Profil, teks, dan akun admin berhasil diperbarui!', 'success');
-        }
-
-        // ========== UPDATE FUNGSI handleAdminLogin ==========
-        function handleAdminLogin() {
-            const userInp = document.getElementById('admin-username').value.trim();
-            const passInp = document.getElementById('admin-password').value.trim();
-            const errEl = document.getElementById('login-admin-error');
-            const errText = document.getElementById('login-admin-error-text');
-
-            if (!userInp || !passInp) {
-                errEl.classList.remove('hidden');
-                errText.textContent = 'Semua field wajib diisi!';
-                return;
-            }
-
-            if (userInp === adminData.username && passInp === adminData.password) {
-                currentAdmin = true;
-                errEl.classList.add('hidden');
-                document.getElementById('admin-username').value = '';
-                document.getElementById('admin-password').value = '';
-                updateAdminOnlyElements();
-                switchPage('page-admin-dashboard');
-                showToast('✅ Selamat datang, Admin!', 'success');
-            } else {
-                errEl.classList.remove('hidden');
-                errText.textContent = 'Username atau Password salah!';
-            }
-        }
-
-        // ========== UPDATE FUNGSI saveAppData (TAMBAH FIELD PEMBARUAN) ==========
-        function saveAppData() {
-            const id = document.getElementById('edit-app-id').value;
-            const nama = document.getElementById('app-name').value.trim();
-            const link = document.getElementById('app-link').value.trim();
-            const deskripsi = document.getElementById('app-description').value.trim();
-            const ikon = document.getElementById('app-icon').value.trim();
-            const editHtml = document.getElementById('app-edit-html').value.trim();
-            const github = document.getElementById('app-github').value.trim();
-            const vercel = document.getElementById('app-vercel').value.trim();
-
-            if (!nama || !link) {
-                showToast('⚠️ Nama dan Link aplikasi wajib diisi!', 'error');
-                return;
-            }
-
-            if (id === '-1') {
-                const newId = appList.length > 0 ? Math.max(...appList.map(a => a.id)) + 1 : 1;
-                appList.push({ id: newId, nama, link, deskripsi, ikon: ikon || '📱', editHtml, github, vercel });
-                showToast('✅ Aplikasi baru berhasil ditambahkan!', 'success');
-            } else {
-                const index = appList.findIndex(a => a.id == id);
-                if (index !== -1) {
-                    appList[index] = { id: parseInt(id), nama, link, deskripsi, ikon: ikon || '📱', editHtml, github, vercel };
-                    showToast('✅ Aplikasi berhasil diperbarui!', 'success');
-                }
-            }
-
-            saveAppList();
-            closeAppFormModal();
-            renderAdminAppList();
-            renderUpdateList();
-            updateAdminStats();
-        }
-
-        // ========== UPDATE FUNGSI openAppFormModal ==========
-        function openAppFormModal(appId = null) {
-            document.getElementById('appFormModal').classList.remove('hidden');
-            resetAppForm();
-
-            if (appId !== null) {
-                const app = appList.find(a => a.id == appId);
-                if (app) {
-                    document.getElementById('edit-app-id').value = app.id;
-                    document.getElementById('app-name').value = app.nama;
-                    document.getElementById('app-link').value = app.link;
-                    document.getElementById('app-description').value = app.deskripsi || '';
-                    document.getElementById('app-icon').value = app.ikon || '';
-                    document.getElementById('app-edit-html').value = app.editHtml || '';
-                    document.getElementById('app-github').value = app.github || '';
-                    document.getElementById('app-vercel').value = app.vercel || '';
-                    document.getElementById('app-form-title').textContent = 'Edit Aplikasi';
-                }
-            } else {
-                document.getElementById('app-form-title').textContent = 'Tambah Aplikasi Baru';
-            }
-        }
-
-        // ========== UPDATE FUNGSI resetAppForm ==========
-        function resetAppForm() {
-            document.getElementById('edit-app-id').value = '-1';
-            document.getElementById('app-name').value = '';
-            document.getElementById('app-link').value = '';
-            document.getElementById('app-description').value = '';
-            document.getElementById('app-icon').value = '';
-            document.getElementById('app-edit-html').value = '';
-            document.getElementById('app-github').value = '';
-            document.getElementById('app-vercel').value = '';
-        }
-
-        // ========== UPDATE FUNGSI createDefaultApps ==========
-        function createDefaultApps() {
-            if (appList.length === 0) {
-                const defaultApps = [
-                    { id: 1, nama: "NotepadPro", link: "notepad.html", deskripsi: "Aplikasi catatan ringan & offline", ikon: "📝", editHtml: "", github: "", vercel: "" },
-                    { id: 2, nama: "VPN Pro", link: "vpn.html", deskripsi: "Akses internet aman & cepat", ikon: "🔒", editHtml: "", github: "", vercel: "" },
-                    { id: 3, nama: "Kalkulator Pro", link: "kalkulator.html", deskripsi: "Hitung cepat & akurat", ikon: "🧮", editHtml: "", github: "", vercel: "" },
-                    { id: 4, nama: "Kalender Pro", link: "kalender.html", deskripsi: "Atur jadwal & kegiatan", ikon: "📅", editHtml: "", github: "", vercel: "" },
-                    { id: 5, nama: "Konverter Pro", link: "konverter.html", deskripsi: "Konversi satuan & mata uang", ikon: "🔄", editHtml: "", github: "", vercel: "" },
-                    { id: 6, nama: "Cuaca Pro", link: "cuaca.html", deskripsi: "Cek prakiraan cuaca", ikon: "🌤️", editHtml: "", github: "", vercel: "" },
-                    { id: 7, nama: "Timer Pro", link: "timer.html", deskripsi: "Pewaktu & pengingat", ikon: "⏱️", editHtml: "", github: "", vercel: "" },
-                    { id: 8, nama: "QR Pro", link: "qr.html", deskripsi: "Scan & buat QR Code", ikon: "📷", editHtml: "", github: "", vercel: "" },
-                    { id: 9, nama: "Password Pro", link: "password.html", deskripsi: "Generator password aman", ikon: "🔑", editHtml: "", github: "", vercel: "" },
-                    { id: 10, nama: "Resep Pro", link: "resep.html", deskripsi: "Koleksi resep masakan", ikon: "🍳", editHtml: "", github: "", vercel: "" },
-                ];
-                appList = defaultApps;
-                saveAppList();
-            }
-        }
-
         // ========== UPDATE FUNGSI switchPage ==========
         function switchPage(pageId) {
             const pages = [
@@ -2995,7 +2457,6 @@
                 target.classList.add('page-transition');
             }
 
-            // Render halaman sesuai tujuan
             if (pageId === 'page-home') {
                 renderAppList();
                 loadProfileAndTexts();
@@ -3011,236 +2472,9 @@
                 renderAdminVisitorList();
             }
             
-            // Update visibilitas elemen admin
             updateAdminOnlyElements();
         }
 
-        // ========== RENDER ADMIN APP LIST ==========
-        function renderAdminAppList() {
-            const container = document.getElementById('admin-app-list');
-            if (!container) return;
-            container.innerHTML = '';
-
-            if (appList.length === 0) {
-                document.getElementById('admin-app-empty').classList.remove('hidden');
-            } else {
-                document.getElementById('admin-app-empty').classList.add('hidden');
-            }
-
-            appList.forEach(app => {
-                container.innerHTML += `
-                    <div class="bg-white border border-slate-200 p-3 rounded-xl flex justify-between items-center shadow-sm">
-                        <div class="flex items-center gap-3">
-                            <div class="text-2xl">${app.ikon || '📱'}</div>
-                            <div>
-                                <h4 class="text-xs font-bold text-slate-700">${app.nama}</h4>
-                                <p class="text-[9px] text-slate-400 truncate max-w-[150px]">${app.link}</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-1">
-                            <button onclick="openAppFormModal(${app.id})" 
-                                    class="w-7 h-7 bg-amber-50 hover:bg-amber-100 text-amber-600 rounded-lg text-xs flex items-center justify-center">
-                                <i class="fa-solid fa-pen"></i>
-                            </button>
-                            <button onclick="openDeleteConfirmModal(${app.id})" 
-                                    class="w-7 h-7 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-xs flex items-center justify-center">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>`;
-            });
-
-            document.getElementById('admin-app-count').textContent = appList.length;
-        }
-
-        function updateAdminStats() {
-            document.getElementById('admin-stat-apps').textContent = appList.length;
-            document.getElementById('admin-stat-last-update').textContent = new Date().toLocaleDateString('id-ID');
-        }
-
-        // ========== MODAL HAPUS ==========
-        function openDeleteConfirmModal(appId) {
-            deleteAppId = appId;
-            const app = appList.find(a => a.id == appId);
-            if (app) {
-                document.getElementById('delete-app-icon').textContent = app.ikon || '📱';
-                document.getElementById('delete-app-name').textContent = app.nama;
-                document.getElementById('delete-app-link').textContent = app.link;
-            }
-            document.getElementById('deleteConfirmModal').classList.remove('hidden');
-        }
-
-        function closeDeleteConfirmModal() {
-            document.getElementById('deleteConfirmModal').classList.add('hidden');
-            deleteAppId = null;
-        }
-
-        function confirmDeleteApp() {
-            if (deleteAppId === null) return;
-            appList = appList.filter(a => a.id != deleteAppId);
-            saveAppList();
-            closeDeleteConfirmModal();
-            renderAdminAppList();
-            renderUpdateList();
-            updateAdminStats();
-            showToast('🗑 Aplikasi berhasil dihapus!', 'warning');
-        }
-
-        // ========== LOAD PROFIL & TEKS ==========
-        function loadProfileAndTexts() {
-            document.getElementById('home-subtitle').textContent = pageTexts.subtitle;
-            document.getElementById('app-list-title').innerHTML = pageTexts.judulApps;
-            document.getElementById('stat-total-apps').textContent = pageTexts.statApps;
-            document.getElementById('stat-total-users').textContent = pageTexts.statUsers;
-            document.getElementById('stat-total-updates').textContent = pageTexts.statUpdates;
-            document.getElementById('profile-name').textContent = profileData.nama;
-            document.getElementById('profile-role').textContent = profileData.role;
-            document.getElementById('profile-description').textContent = profileData.deskripsi;
-            
-            const waLink = document.getElementById('profile-wa');
-            const telegramLink = document.getElementById('profile-telegram');
-            const emailLink = document.getElementById('profile-email');
-            
-            if (waLink) waLink.href = 'https://wa.me/' + profileData.wa.replace(/[^0-9]/g, '');
-            if (telegramLink) telegramLink.href = 'https://t.me/' + profileData.telegram.replace('@', '');
-            if (emailLink) emailLink.href = 'mailto:' + profileData.email;
-        }
-
-        // ========== RENDER APP LIST (HALAMAN DEPAN) ==========
-        function renderAppList() {
-            const container = document.getElementById('app-grid-container');
-            if (!container) return;
-            container.innerHTML = '';
-
-            const startIndex = (appPage - 1) * appsPerPage;
-            const endIndex = startIndex + appsPerPage;
-            const pageApps = appList.slice(startIndex, endIndex);
-
-            if (pageApps.length === 0) {
-                document.getElementById('app-empty-state').classList.remove('hidden');
-            } else {
-                document.getElementById('app-empty-state').classList.add('hidden');
-            }
-
-            pageApps.forEach(app => {
-                container.innerHTML += `
-                    <div onclick="openApp('${app.id}')" 
-                         class="app-card bg-white border border-slate-200 rounded-2xl p-4 text-center cursor-pointer hover:border-indigo-300 transition-all">
-                        <div class="text-3xl mb-2">${app.ikon || '📱'}</div>
-                        <h4 class="text-xs font-bold text-slate-700 truncate">${app.nama}</h4>
-                        <p class="text-[9px] text-slate-400 mt-1 truncate">${app.deskripsi || 'Klik untuk membuka'}</p>
-                    </div>`;
-            });
-
-            document.getElementById('app-page-info').textContent = 'Halaman ' + appPage;
-            document.getElementById('btn-prev-page').disabled = appPage === 1;
-            document.getElementById('btn-next-page').disabled = endIndex >= appList.length;
-        }
-
-        function filterAppList() {
-            const searchTerm = document.getElementById('app-search-input').value.toLowerCase().trim();
-            const container = document.getElementById('app-grid-container');
-            if (!container) return;
-            container.innerHTML = '';
-
-            const clearBtn = document.getElementById('app-search-clear');
-            if (searchTerm.length > 0) {
-                clearBtn.classList.remove('hidden');
-            } else {
-                clearBtn.classList.add('hidden');
-            }
-
-            const filteredApps = searchTerm.length > 0 
-                ? appList.filter(app => app.nama.toLowerCase().includes(searchTerm))
-                : appList.slice(0, appsPerPage);
-
-            if (filteredApps.length === 0) {
-                document.getElementById('app-empty-state').classList.remove('hidden');
-                document.getElementById('app-pagination').style.display = 'none';
-            } else {
-                document.getElementById('app-empty-state').classList.add('hidden');
-                document.getElementById('app-pagination').style.display = searchTerm.length > 0 ? 'none' : '';
-            }
-
-            filteredApps.forEach(app => {
-                container.innerHTML += `
-                    <div onclick="openApp('${app.id}')" 
-                         class="app-card bg-white border border-slate-200 rounded-2xl p-4 text-center cursor-pointer hover:border-indigo-300 transition-all">
-                        <div class="text-3xl mb-2">${app.ikon || '📱'}</div>
-                        <h4 class="text-xs font-bold text-slate-700 truncate">${app.nama}</h4>
-                        <p class="text-[9px] text-slate-400 mt-1 truncate">${app.deskripsi || 'Klik untuk membuka'}</p>
-                    </div>`;
-            });
-        }
-
-        function clearAppSearch() {
-            document.getElementById('app-search-input').value = '';
-            document.getElementById('app-search-clear').classList.add('hidden');
-            appPage = 1;
-            renderAppList();
-            document.getElementById('app-pagination').style.display = '';
-        }
-
-        function openApp(appId) {
-            const app = appList.find(a => a.id == appId);
-            if (!app || !app.link) {
-                showToast('⚠️ Link aplikasi belum diatur!', 'warning');
-                return;
-            }
-            window.open(app.link, '_blank');
-        }
-
-        function prevAppPage() {
-            if (appPage > 1) {
-                appPage--;
-                renderAppList();
-            }
-        }
-
-        function nextAppPage() {
-            const totalPages = Math.ceil(appList.length / appsPerPage);
-            if (appPage < totalPages) {
-                appPage++;
-                renderAppList();
-            }
-        }
-
-        function contactAdmin() {
-            openVisitorChat();
-        }
-
-        function closeAppFormModal() {
-            document.getElementById('appFormModal').classList.add('hidden');
-            resetAppForm();
-        }
-
-        function closeProfileEditModal() {
-            document.getElementById('profileEditModal').classList.add('hidden');
-        }
-
-        function handleAdminLogout() {
-            if (confirm('Apakah Anda yakin ingin keluar dari panel admin?')) {
-                currentAdmin = false;
-                updateAdminOnlyElements();
-                switchPage('page-home');
-                showToast('👋 Anda telah logout dari panel admin.', 'info');
-            }
-        }
-
-        // ========== INIT ==========
-        (function init() {
-            document.getElementById('currentYear').textContent = new Date().getFullYear();
-            createDefaultApps();
-            loadProfileAndTexts();
-            renderAppList();
-            updateAdminOnlyElements();
-            console.log('✅ Dasbor Iklan Aplikasi Pro siap!');
-            console.log('👤 Admin Login: admin / admin123');
-            console.log('📱 ' + appList.length + ' aplikasi siap digunakan');
-            console.log('🔄 Halaman Pembaruan Aplikasi (hanya admin) siap');
-            console.log('🔐 Edit Akun Admin (username, password, email, hp) siap');
-        })();
-
-        console.log('✅ Blok 16 – Super Lengkap siap');
+        console.log('✅ Blok 16 – Pembaruan Aplikasi + Simpan GitHub/Vercel siap');
     </script>
 <!-- END BLOK 16 -->
