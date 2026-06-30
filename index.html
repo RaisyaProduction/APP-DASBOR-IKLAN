@@ -578,7 +578,7 @@
 <!-- ===== HALAMAN DASBOR IKLAN APLIKASI → BLOK 7 - DASBOR IKLAN APLIKASI PRO - HALAMAN ADMIN DASHBOARD ===== -->
 <!-- ============================================================
      BLOK 7 - DASBOR IKLAN APLIKASI PRO - HALAMAN ADMIN DASHBOARD
-     (Statistik, Daftar Aplikasi, Tambah/Edit/Hapus)
+     (Statistik, Daftar Aplikasi, Menu Chat, Edit Profil, Kelola Pembaruan)
      ============================================================ -->
             <div id="page-admin-dashboard" class="hidden space-y-5 page-transition">
                 
@@ -620,11 +620,32 @@
                     </div>
                 </div>
 
-                <!-- TOMBOL TAMBAH APLIKASI -->
-                <button onclick="openAppFormModal()" 
-                        class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold py-3 rounded-xl text-sm shadow-lg shadow-indigo-500/20 active:scale-[0.97] transition-all cursor-pointer flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-plus-circle"></i> Tambah Aplikasi Baru
-                </button>
+                <!-- MENU CEPAT -->
+                <div class="grid grid-cols-2 gap-3">
+                    <!-- TOMBOL TAMBAH APLIKASI -->
+                    <button onclick="openAppFormModal()" 
+                            class="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold py-3 rounded-xl text-xs shadow-lg shadow-indigo-500/20 active:scale-[0.97] transition-all cursor-pointer flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-plus-circle"></i> Tambah Aplikasi
+                    </button>
+                    
+                    <!-- TOMBOL CHAT PENGUNJUNG -->
+                    <button onclick="openAdminChatList()" 
+                            class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-3 rounded-xl text-xs shadow-lg shadow-emerald-500/20 active:scale-[0.97] transition-all cursor-pointer flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-headset"></i> Chat Pengunjung
+                    </button>
+                    
+                    <!-- TOMBOL KELOLA PEMBARUAN -->
+                    <button onclick="switchPage('page-app-updates')" 
+                            class="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold py-3 rounded-xl text-xs shadow-lg shadow-amber-500/20 active:scale-[0.97] transition-all cursor-pointer flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-rotate"></i> Kelola Pembaruan
+                    </button>
+                    
+                    <!-- TOMBOL EDIT PROFIL & TEKS -->
+                    <button onclick="openEditProfileModal()" 
+                            class="bg-gradient-to-r from-slate-600 to-slate-800 hover:from-slate-700 hover:to-slate-900 text-white font-bold py-3 rounded-xl text-xs shadow-lg shadow-slate-500/20 active:scale-[0.97] transition-all cursor-pointer flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-sliders"></i> Edit Profil & Teks
+                    </button>
+                </div>
 
                 <!-- DAFTAR APLIKASI (ADMIN) -->
                 <div class="space-y-2">
@@ -632,7 +653,7 @@
                         <i class="fa-solid fa-list-check text-indigo-400"></i> Daftar Aplikasi
                         <span id="admin-app-count" class="bg-indigo-100 text-indigo-600 px-2 py-0.5 rounded-full text-[9px]">0</span>
                     </h3>
-                    <div id="admin-app-list" class="space-y-2 max-h-[400px] overflow-y-auto pr-1">
+                    <div id="admin-app-list" class="space-y-2 max-h-[300px] overflow-y-auto pr-1">
                         <div class="text-center text-slate-400 py-6 text-xs italic">Memuat daftar aplikasi...</div>
                     </div>
                     
@@ -796,10 +817,10 @@
 <!-- ===== HALAMAN DASBOR IKLAN APLIKASI → BLOK 9 - DASBOR IKLAN APLIKASI PRO - MODAL EDIT PROFIL & TEKS ===== -->
 <!-- ============================================================
      BLOK 9 - DASBOR IKLAN APLIKASI PRO - MODAL EDIT PROFIL & TEKS
-     (Edit Nama, Deskripsi, Kontak, Subtitle, Judul Aplikasi)
+     + EDIT AKUN ADMIN (Username, Password, Email, HP)
      ============================================================ -->
 
-<!-- MODAL EDIT PROFIL & TEKS -->
+<!-- MODAL EDIT PROFIL & TEKS + AKUN ADMIN -->
 <div id="profileEditModal" class="modal-overlay hidden">
     <div class="modal-content" style="max-width:450px;">
         
@@ -810,8 +831,8 @@
                     <i class="fa-solid fa-user-pen text-white"></i>
                 </div>
                 <div>
-                    <h3 class="font-bold text-base">Edit Profil & Teks</h3>
-                    <p class="text-[10px] text-indigo-200">Ubah profil pengembang dan teks halaman</p>
+                    <h3 class="font-bold text-base">Edit Profil & Akun</h3>
+                    <p class="text-[10px] text-indigo-200">Ubah profil, teks halaman, dan akun admin</p>
                 </div>
             </div>
             <button onclick="closeProfileEditModal()" class="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center cursor-pointer transition-all text-white">
@@ -822,7 +843,54 @@
         <!-- BODY MODAL -->
         <div class="p-5 space-y-4 max-h-[60vh] overflow-y-auto">
             
-            <!-- BAGIAN PROFIL -->
+            <!-- ========== BAGIAN AKUN ADMIN ========== -->
+            <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-4 border border-amber-200 space-y-3">
+                <h4 class="text-xs font-bold text-amber-700 uppercase flex items-center gap-2">
+                    <i class="fa-solid fa-shield-halved text-amber-500"></i> Akun Admin
+                </h4>
+                
+                <!-- USERNAME ADMIN -->
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Username Admin</label>
+                    <input type="text" id="edit-admin-username" 
+                           class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all"
+                           placeholder="Username admin">
+                </div>
+                
+                <!-- PASSWORD BARU -->
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Password Baru (kosongkan jika tidak ingin ganti)</label>
+                    <input type="password" id="edit-admin-password" 
+                           class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all"
+                           placeholder="Minimal 6 karakter">
+                </div>
+                
+                <!-- KONFIRMASI PASSWORD BARU -->
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Konfirmasi Password Baru</label>
+                    <input type="password" id="edit-admin-password-confirm" 
+                           class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all"
+                           placeholder="Ulangi password baru">
+                </div>
+                
+                <!-- EMAIL ADMIN -->
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Email Admin (untuk verifikasi lupa password)</label>
+                    <input type="email" id="edit-admin-email" 
+                           class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all"
+                           placeholder="email@example.com">
+                </div>
+                
+                <!-- NOMOR HP ADMIN -->
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nomor HP Admin (untuk verifikasi lupa password)</label>
+                    <input type="text" id="edit-admin-hp" 
+                           class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all"
+                           placeholder="08xxx">
+                </div>
+            </div>
+            
+            <!-- ========== BAGIAN PROFIL PENGEMBANG ========== -->
             <div class="bg-slate-50 rounded-xl p-4 border border-slate-100 space-y-3">
                 <h4 class="text-xs font-bold text-slate-500 uppercase flex items-center gap-2">
                     <i class="fa-solid fa-id-card text-indigo-500"></i> Profil Pengembang
@@ -876,7 +944,7 @@
                 </div>
             </div>
             
-            <!-- BAGIAN TEKS HALAMAN -->
+            <!-- ========== BAGIAN TEKS HALAMAN ========== -->
             <div class="bg-slate-50 rounded-xl p-4 border border-slate-100 space-y-3">
                 <h4 class="text-xs font-bold text-slate-500 uppercase flex items-center gap-2">
                     <i class="fa-solid fa-text-height text-purple-500"></i> Teks Halaman Depan
@@ -929,7 +997,7 @@
                 </button>
                 <button onclick="saveProfileData()" 
                         class="w-2/3 bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2.5 rounded-xl text-xs cursor-pointer transition-all active:scale-95 shadow-md flex items-center justify-center gap-1">
-                    <i class="fa-solid fa-floppy-disk mr-1"></i> Simpan Perubahan
+                    <i class="fa-solid fa-floppy-disk mr-1"></i> Simpan Semua Perubahan
                 </button>
             </div>
         </div>
@@ -1924,72 +1992,405 @@
 
 <!-- ===== HALAMAN DASBOR IKLAN APLIKASI → BLOK 15 - DASBOR IKLAN APLIKASI PRO - HALAMAN PEMBARUAN APLIKASI ===== -->
 <!-- ============================================================
-     BLOK 15 - DASBOR IKLAN APLIKASI PRO - HALAMAN PEMBARUAN APLIKASI
-     (Grid Aplikasi dengan Link Edit HTML, GitHub, Vercel)
+     BLOK 16 - DASBOR IKLAN APLIKASI PRO - JAVASCRIPT PEMBARUAN
+     (Render Halaman Pembaruan + Edit Admin + Tombol Edit untuk Admin)
      ============================================================ -->
-            <div id="page-app-updates" class="hidden space-y-5 page-transition">
-                
-                <!-- HEADER -->
-                <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-                    <div>
-                        <span class="px-2 py-0.5 text-[9px] font-extrabold bg-emerald-100 text-emerald-700 rounded-full uppercase tracking-wider">
-                            <i class="fa-solid fa-rotate mr-1"></i> Pembaruan
-                        </span>
-                        <h2 class="text-md font-bold text-slate-700 mt-0.5 flex items-center gap-2">
-                            <i class="fa-solid fa-code-branch text-emerald-500"></i> Pembaruan Aplikasi
-                        </h2>
-                    </div>
-                    <button onclick="switchPage('page-home')" 
-                            class="text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1.5 rounded-lg transition-all cursor-pointer">
-                        <i class="fa-solid fa-house mr-1"></i> Beranda
-                    </button>
-                </div>
+    <script>
+        // ========== RENDER HALAMAN PEMBARUAN APLIKASI ==========
+        function renderUpdateList() {
+            const container = document.getElementById('update-app-list');
+            if (!container) return;
+            container.innerHTML = '';
 
-                <!-- SUBTITLE -->
-                <div class="text-center space-y-2">
-                    <p class="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">
-                        Kelola pembaruan aplikasi Anda. Klik ikon untuk membuka link Edit HTML, GitHub, atau Vercel.
-                    </p>
-                    <!-- PENCARIAN -->
-                    <div class="relative max-w-xs mx-auto">
-                        <input type="text" id="update-search-input" 
-                               class="w-full px-4 py-2.5 pl-10 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
-                               placeholder="Cari aplikasi..."
-                               oninput="filterUpdateList()">
-                        <i class="fa-solid fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                        <button onclick="clearUpdateSearch()" id="update-search-clear" 
-                                class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-red-500 cursor-pointer">
-                            <i class="fa-solid fa-xmark text-xs"></i>
-                        </button>
-                    </div>
-                </div>
+            // Tampilkan SEMUA aplikasi (bukan hanya yang memiliki link pembaruan)
+            // Agar admin bisa melihat semua dan mengedit yang belum memiliki link
+            const appsToShow = appList;
 
-                <!-- DAFTAR APLIKASI DENGAN LINK PEMBARUAN -->
-                <div class="space-y-1.5">
-                    <h3 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider flex items-center gap-2 px-1">
-                        <i class="fa-solid fa-list-check text-emerald-400"></i> Daftar Aplikasi
-                        <span id="update-app-count" class="bg-emerald-100 text-emerald-600 px-2 py-0.5 rounded-full text-[9px]">0</span>
-                    </h3>
-                    <div id="update-app-list" class="space-y-3 max-h-[500px] overflow-y-auto pr-1">
-                        <div class="text-center text-slate-400 py-6 text-xs italic">Memuat daftar aplikasi...</div>
-                    </div>
-                    
-                    <div id="update-empty-state" class="text-center py-8 hidden">
-                        <div class="text-4xl mb-2">📭</div>
-                        <p class="text-xs text-slate-400 font-medium">Belum ada aplikasi</p>
-                        <p class="text-[10px] text-slate-400 mt-1">Admin dapat menambahkan aplikasi di halaman admin</p>
-                    </div>
-                </div>
+            if (appsToShow.length === 0) {
+                document.getElementById('update-empty-state').classList.remove('hidden');
+                document.getElementById('update-app-count').textContent = '0';
+                // Sembunyikan tombol tambah jika bukan admin
+                updateAdminOnlyElements();
+                return;
+            }
 
-                <!-- KEMBALI KE HALAMAN DEPAN -->
-                <div class="text-center pt-2 border-t border-slate-100">
-                    <button onclick="switchPage('page-home')" 
-                            class="text-xs font-medium text-slate-400 hover:text-emerald-500 cursor-pointer transition-colors">
-                        <i class="fa-solid fa-arrow-left mr-1"></i> Kembali ke Halaman Depan
-                    </button>
-                </div>
-            </div>
-<!-- END BLOK 15 -->
+            document.getElementById('update-empty-state').classList.add('hidden');
+            document.getElementById('update-app-count').textContent = appsToShow.length;
+            
+            // Tampilkan/sembunyikan elemen khusus admin
+            updateAdminOnlyElements();
+
+            appsToShow.forEach(app => {
+                container.innerHTML += `
+                    <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
+                        <!-- HEADER APLIKASI -->
+                        <div class="flex items-center gap-3 mb-3 pb-3 border-b border-slate-100">
+                            <div class="text-3xl">${app.ikon || '📱'}</div>
+                            <div class="flex-1">
+                                <h4 class="text-sm font-extrabold text-slate-800">${app.nama}</h4>
+                                <p class="text-[10px] text-slate-400 mt-0.5">${app.deskripsi || 'Aplikasi Pro'}</p>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <button onclick="openApp('${app.id}')" 
+                                        class="w-8 h-8 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center text-xs cursor-pointer transition-all"
+                                        title="Buka Aplikasi">
+                                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                </button>
+                                ${currentAdmin ? `
+                                <button onclick="openAppFormModal(${app.id})" 
+                                        class="w-8 h-8 bg-amber-50 hover:bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center text-xs cursor-pointer transition-all"
+                                        title="Edit Aplikasi">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+                                <button onclick="openDeleteConfirmModal(${app.id})" 
+                                        class="w-8 h-8 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg flex items-center justify-center text-xs cursor-pointer transition-all"
+                                        title="Hapus Aplikasi">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                        
+                        <!-- LINK PEMBARUAN -->
+                        <div class="grid grid-cols-3 gap-2">
+                            <!-- EDIT HTML -->
+                            ${app.editHtml ? `
+                            <a href="${app.editHtml}" target="_blank" 
+                               class="flex flex-col items-center gap-1 p-2.5 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-xl text-center cursor-pointer transition-all group">
+                                <i class="fa-solid fa-file-code text-amber-500 text-lg group-hover:scale-110 transition-transform"></i>
+                                <span class="text-[9px] font-bold text-amber-700">Edit HTML</span>
+                                <span class="text-[8px] text-amber-500 truncate max-w-full">Buka Editor</span>
+                            </a>
+                            ` : `
+                            <div class="flex flex-col items-center gap-1 p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-center opacity-50">
+                                <i class="fa-solid fa-file-code text-slate-400 text-lg"></i>
+                                <span class="text-[9px] font-bold text-slate-400">Edit HTML</span>
+                                <span class="text-[8px] text-slate-400">Belum diatur</span>
+                            </div>
+                            `}
+                            
+                            <!-- GITHUB -->
+                            ${app.github ? `
+                            <a href="${app.github}" target="_blank" 
+                               class="flex flex-col items-center gap-1 p-2.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-xl text-center cursor-pointer transition-all group">
+                                <i class="fa-brands fa-github text-slate-700 text-lg group-hover:scale-110 transition-transform"></i>
+                                <span class="text-[9px] font-bold text-slate-700">GitHub</span>
+                                <span class="text-[8px] text-slate-500 truncate max-w-full">Repository</span>
+                            </a>
+                            ` : `
+                            <div class="flex flex-col items-center gap-1 p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-center opacity-50">
+                                <i class="fa-brands fa-github text-slate-400 text-lg"></i>
+                                <span class="text-[9px] font-bold text-slate-400">GitHub</span>
+                                <span class="text-[8px] text-slate-400">Belum diatur</span>
+                            </div>
+                            `}
+                            
+                            <!-- VERCEL -->
+                            ${app.vercel ? `
+                            <a href="${app.vercel}" target="_blank" 
+                               class="flex flex-col items-center gap-1 p-2.5 bg-sky-50 hover:bg-sky-100 border border-sky-200 rounded-xl text-center cursor-pointer transition-all group">
+                                <i class="fa-solid fa-cloud text-sky-500 text-lg group-hover:scale-110 transition-transform"></i>
+                                <span class="text-[9px] font-bold text-sky-700">Vercel</span>
+                                <span class="text-[8px] text-sky-500 truncate max-w-full">Deploy</span>
+                            </a>
+                            ` : `
+                            <div class="flex flex-col items-center gap-1 p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-center opacity-50">
+                                <i class="fa-solid fa-cloud text-slate-400 text-lg"></i>
+                                <span class="text-[9px] font-bold text-slate-400">Vercel</span>
+                                <span class="text-[8px] text-slate-400">Belum diatur</span>
+                            </div>
+                            `}
+                        </div>
+                    </div>`;
+            });
+        }
+
+        function filterUpdateList() {
+            const searchTerm = document.getElementById('update-search-input').value.toLowerCase().trim();
+            const container = document.getElementById('update-app-list');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const clearBtn = document.getElementById('update-search-clear');
+            if (searchTerm.length > 0) {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+
+            const filteredApps = searchTerm.length > 0 
+                ? appList.filter(app => app.nama.toLowerCase().includes(searchTerm))
+                : appList;
+
+            if (filteredApps.length === 0) {
+                document.getElementById('update-empty-state').classList.remove('hidden');
+                document.getElementById('update-app-count').textContent = '0';
+                return;
+            }
+
+            document.getElementById('update-empty-state').classList.add('hidden');
+            document.getElementById('update-app-count').textContent = filteredApps.length;
+            
+            updateAdminOnlyElements();
+
+            filteredApps.forEach(app => {
+                container.innerHTML += `
+                    <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
+                        <div class="flex items-center gap-3 mb-3 pb-3 border-b border-slate-100">
+                            <div class="text-3xl">${app.ikon || '📱'}</div>
+                            <div class="flex-1">
+                                <h4 class="text-sm font-extrabold text-slate-800">${app.nama}</h4>
+                                <p class="text-[10px] text-slate-400 mt-0.5">${app.deskripsi || 'Aplikasi Pro'}</p>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <button onclick="openApp('${app.id}')" 
+                                        class="w-8 h-8 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center text-xs cursor-pointer transition-all"
+                                        title="Buka Aplikasi">
+                                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                </button>
+                                ${currentAdmin ? `
+                                <button onclick="openAppFormModal(${app.id})" 
+                                        class="w-8 h-8 bg-amber-50 hover:bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center text-xs cursor-pointer transition-all"
+                                        title="Edit Aplikasi">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+                                <button onclick="openDeleteConfirmModal(${app.id})" 
+                                        class="w-8 h-8 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg flex items-center justify-center text-xs cursor-pointer transition-all"
+                                        title="Hapus Aplikasi">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2">
+                            ${app.editHtml ? `
+                            <a href="${app.editHtml}" target="_blank" 
+                               class="flex flex-col items-center gap-1 p-2.5 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-xl text-center cursor-pointer transition-all group">
+                                <i class="fa-solid fa-file-code text-amber-500 text-lg group-hover:scale-110 transition-transform"></i>
+                                <span class="text-[9px] font-bold text-amber-700">Edit HTML</span>
+                                <span class="text-[8px] text-amber-500 truncate max-w-full">Buka Editor</span>
+                            </a>
+                            ` : `
+                            <div class="flex flex-col items-center gap-1 p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-center opacity-50">
+                                <i class="fa-solid fa-file-code text-slate-400 text-lg"></i>
+                                <span class="text-[9px] font-bold text-slate-400">Edit HTML</span>
+                                <span class="text-[8px] text-slate-400">Belum diatur</span>
+                            </div>
+                            `}
+                            ${app.github ? `
+                            <a href="${app.github}" target="_blank" 
+                               class="flex flex-col items-center gap-1 p-2.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-xl text-center cursor-pointer transition-all group">
+                                <i class="fa-brands fa-github text-slate-700 text-lg group-hover:scale-110 transition-transform"></i>
+                                <span class="text-[9px] font-bold text-slate-700">GitHub</span>
+                                <span class="text-[8px] text-slate-500 truncate max-w-full">Repository</span>
+                            </a>
+                            ` : `
+                            <div class="flex flex-col items-center gap-1 p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-center opacity-50">
+                                <i class="fa-brands fa-github text-slate-400 text-lg"></i>
+                                <span class="text-[9px] font-bold text-slate-400">GitHub</span>
+                                <span class="text-[8px] text-slate-400">Belum diatur</span>
+                            </div>
+                            `}
+                            ${app.vercel ? `
+                            <a href="${app.vercel}" target="_blank" 
+                               class="flex flex-col items-center gap-1 p-2.5 bg-sky-50 hover:bg-sky-100 border border-sky-200 rounded-xl text-center cursor-pointer transition-all group">
+                                <i class="fa-solid fa-cloud text-sky-500 text-lg group-hover:scale-110 transition-transform"></i>
+                                <span class="text-[9px] font-bold text-sky-700">Vercel</span>
+                                <span class="text-[8px] text-sky-500 truncate max-w-full">Deploy</span>
+                            </a>
+                            ` : `
+                            <div class="flex flex-col items-center gap-1 p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-center opacity-50">
+                                <i class="fa-solid fa-cloud text-slate-400 text-lg"></i>
+                                <span class="text-[9px] font-bold text-slate-400">Vercel</span>
+                                <span class="text-[8px] text-slate-400">Belum diatur</span>
+                            </div>
+                            `}
+                        </div>
+                    </div>`;
+            });
+        }
+
+        function clearUpdateSearch() {
+            document.getElementById('update-search-input').value = '';
+            document.getElementById('update-search-clear').classList.add('hidden');
+            renderUpdateList();
+        }
+
+        // ========== TAMPILKAN/SEMBUNYIKAN ELEMEN ADMIN ==========
+        function updateAdminOnlyElements() {
+            const adminElements = document.querySelectorAll('.admin-only-element');
+            adminElements.forEach(el => {
+                el.style.display = currentAdmin ? '' : 'none';
+            });
+            
+            // Tombol tambah di halaman pembaruan
+            const btnAdd = document.getElementById('btn-add-app-update');
+            if (btnAdd) {
+                btnAdd.style.display = currentAdmin ? '' : 'none';
+            }
+        }
+
+        // ========== UPDATE FUNGSI openEditProfileModal ==========
+        function openEditProfileModal() {
+            document.getElementById('profileEditModal').classList.remove('hidden');
+            
+            // Isi data admin
+            document.getElementById('edit-admin-username').value = adminData.username;
+            document.getElementById('edit-admin-password').value = '';
+            document.getElementById('edit-admin-password-confirm').value = '';
+            document.getElementById('edit-admin-email').value = adminData.email;
+            document.getElementById('edit-admin-hp').value = adminData.hp;
+            
+            // Isi data profil
+            document.getElementById('edit-profile-name').value = profileData.nama;
+            document.getElementById('edit-profile-role').value = profileData.role;
+            document.getElementById('edit-profile-description').value = profileData.deskripsi;
+            document.getElementById('edit-profile-wa').value = profileData.wa;
+            document.getElementById('edit-profile-telegram').value = profileData.telegram;
+            document.getElementById('edit-profile-email').value = profileData.email;
+            
+            // Isi teks halaman
+            document.getElementById('edit-home-subtitle').value = pageTexts.subtitle;
+            document.getElementById('edit-app-list-title').value = pageTexts.judulApps;
+            document.getElementById('edit-stat-apps').value = pageTexts.statApps;
+            document.getElementById('edit-stat-users').value = pageTexts.statUsers;
+            document.getElementById('edit-stat-updates').value = pageTexts.statUpdates;
+        }
+
+        // ========== UPDATE FUNGSI saveProfileData ==========
+        function saveProfileData() {
+            // Simpan data admin
+            const newUsername = document.getElementById('edit-admin-username').value.trim();
+            const newPassword = document.getElementById('edit-admin-password').value.trim();
+            const newPasswordConfirm = document.getElementById('edit-admin-password-confirm').value.trim();
+            const newEmail = document.getElementById('edit-admin-email').value.trim();
+            const newHp = document.getElementById('edit-admin-hp').value.trim();
+
+            if (!newUsername) {
+                showToast('⚠️ Username admin tidak boleh kosong!', 'error');
+                return;
+            }
+
+            if (newPassword) {
+                if (newPassword.length < 6) {
+                    showToast('⚠️ Password minimal 6 karakter!', 'error');
+                    return;
+                }
+                if (newPassword !== newPasswordConfirm) {
+                    showToast('⚠️ Password tidak cocok!', 'error');
+                    return;
+                }
+                adminData.password = newPassword;
+            }
+
+            adminData.username = newUsername;
+            adminData.email = newEmail;
+            adminData.hp = newHp;
+            saveAdminData();
+
+            // Simpan data profil
+            profileData.nama = document.getElementById('edit-profile-name').value.trim();
+            profileData.role = document.getElementById('edit-profile-role').value.trim();
+            profileData.deskripsi = document.getElementById('edit-profile-description').value.trim();
+            profileData.wa = document.getElementById('edit-profile-wa').value.trim();
+            profileData.telegram = document.getElementById('edit-profile-telegram').value.trim();
+            profileData.email = document.getElementById('edit-profile-email').value.trim();
+            saveProfileData();
+
+            // Simpan teks halaman
+            pageTexts.subtitle = document.getElementById('edit-home-subtitle').value.trim();
+            pageTexts.judulApps = document.getElementById('edit-app-list-title').value.trim();
+            pageTexts.statApps = document.getElementById('edit-stat-apps').value.trim();
+            pageTexts.statUsers = document.getElementById('edit-stat-users').value.trim();
+            pageTexts.statUpdates = document.getElementById('edit-stat-updates').value.trim();
+            savePageTexts();
+
+            closeProfileEditModal();
+            loadProfileAndTexts();
+            showToast('✅ Profil, teks, dan akun admin berhasil diperbarui!', 'success');
+        }
+
+        // ========== UPDATE FUNGSI handleAdminLogin ==========
+        function handleAdminLogin() {
+            const userInp = document.getElementById('admin-username').value.trim();
+            const passInp = document.getElementById('admin-password').value.trim();
+            const errEl = document.getElementById('login-admin-error');
+            const errText = document.getElementById('login-admin-error-text');
+
+            if (!userInp || !passInp) {
+                errEl.classList.remove('hidden');
+                errText.textContent = 'Semua field wajib diisi!';
+                return;
+            }
+
+            if (userInp === adminData.username && passInp === adminData.password) {
+                currentAdmin = true;
+                errEl.classList.add('hidden');
+                document.getElementById('admin-username').value = '';
+                document.getElementById('admin-password').value = '';
+                updateAdminOnlyElements();
+                switchPage('page-admin-dashboard');
+                showToast('✅ Selamat datang, Admin!', 'success');
+            } else {
+                errEl.classList.remove('hidden');
+                errText.textContent = 'Username atau Password salah!';
+            }
+        }
+
+        // ========== UPDATE FUNGSI switchPage ==========
+        function switchPage(pageId) {
+            const pages = [
+                'page-home', 'page-login-admin', 'page-forgot-admin', 'page-reset-admin',
+                'page-admin-dashboard', 'page-chat-visitor', 'page-admin-chat-list',
+                'page-admin-chat-conversation', 'page-app-updates'
+            ];
+            pages.forEach(p => {
+                const el = document.getElementById(p);
+                if (el) el.classList.add('hidden');
+            });
+            const target = document.getElementById(pageId);
+            if (target) {
+                target.classList.remove('hidden');
+                target.classList.add('page-transition');
+            }
+
+            if (pageId === 'page-home') {
+                renderAppList();
+                loadProfileAndTexts();
+                updateAdminOnlyElements();
+            }
+            if (pageId === 'page-admin-dashboard') {
+                renderAdminAppList();
+                updateAdminStats();
+                updateAdminOnlyElements();
+            }
+            if (pageId === 'page-app-updates') {
+                renderUpdateList();
+                updateAdminOnlyElements();
+            }
+            if (pageId === 'page-admin-chat-list') {
+                renderAdminVisitorList();
+                updateAdminOnlyElements();
+            }
+        }
+
+        // ========== UPDATE INIT ==========
+        (function init() {
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+            createDefaultApps();
+            loadProfileAndTexts();
+            renderAppList();
+            updateAdminOnlyElements();
+            console.log('✅ Dasbor Iklan Aplikasi Pro siap!');
+            console.log('👤 Admin Login: admin / admin123');
+            console.log('📱 ' + appList.length + ' aplikasi siap digunakan');
+            console.log('🔄 Halaman Pembaruan Aplikasi dengan Edit Admin siap');
+            console.log('🔐 Edit Akun Admin (username, password, email, hp) siap');
+        })();
+
+        console.log('✅ Blok 16 – Pembaruan Aplikasi + Edit Admin siap');
+    </script>
+<!-- END BLOK 16 -->
 
 
 <!-- ===== HALAMAN DASBOR IKLAN APLIKASI → BLOK 16 - DASBOR IKLAN APLIKASI PRO - JAVASCRIPT PEMBARUAN ===== -->
